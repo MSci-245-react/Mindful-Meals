@@ -3,7 +3,7 @@ import config from './config.js';
 import fetch from 'node-fetch';
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 import bodyParser from 'body-parser';
 import response from 'express';
 
@@ -12,48 +12,74 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 5000;
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-// API to read movies from the database
-app.post('/api/getMovies', (req, res) => {
-	let connection = mysql.createConnection(config);
+app.post('/api/loadUserSettings', (req, res) => {
+  let connection = mysql.createConnection(config);
+  let userID = req.body.userID;
 
-	const sql = `SELECT id, name, year, quality FROM movies`;
+  let sql = `SELECT mode FROM user WHERE userID = ?`;
+  console.log(sql);
+  let data = [userID];
+  console.log(data);
 
-	connection.query(sql, (error, results, fields) => {
-		if (error) {
-			return console.error(error.message);
-		}
-		let string = JSON.stringify(results);
-		res.send({ express: string });
-	});
-	connection.end();
+  connection.query(sql, data, (error, results, fields) => {
+    if (error) {
+      return console.error(error.message);
+    }
+
+    let string = JSON.stringify(results);
+    //let obj = JSON.parse(string);
+    res.send({express: string});
+  });
+  connection.end();
 });
 
-// API to add a review to the database
+app.post('/api/loadMovies', (req, res) => {
+  let connection = mysql.createConnection(config);
+  let userID = req.body.userID;
+
+  let sql = `SELECT * FROM movies`;
+  console.log(sql);
+  let data = [userID];
+  console.log(data);
+
+  connection.query(sql, data, (error, results, fields) => {
+    if (error) {
+      return console.error(error.message);
+    }
+
+    let string = JSON.stringify(results);
+    //let obj = JSON.parse(string);
+    res.send({express: string});
+  });
+  connection.end();
+});
+
 app.post('/api/addReview', (req, res) => {
-	const { userID, movieID, reviewTitle, reviewContent, reviewScore } = req.body;
+  const {reviewTitle, reviewScore, reviewContent, userID, movieID} = req.body;
 
-	let connection = mysql.createConnection(config);
+  const connection = mysql.createConnection(config);
 
-	const sql = `INSERT INTO Review (userID, movieID, reviewTitle, reviewContent, reviewScore) 
-				 VALUES (?, ?, ?, ?, ?)`;
+  const sql =
+    'INSERT INTO review (reviewTitle, reviewScore, reviewContent, userID, movieID) VALUES (?, ?, ?, ?, ?)';
+  const values = [reviewTitle, reviewScore, reviewContent, userID, movieID];
+  console.log(values);
 
-	const data = [userID, movieID, reviewTitle, reviewContent, reviewScore];
-
-	connection.query(sql, data, (error, results, fields) => {
-		if (error) {
-			console.error("Error adding review:", error.message);
-			return res.status(500).json({ error: "Error adding review to the database" });
-		}
-
-		return res.status(200).json({ success: true });
-	});
-	connection.end();
+  connection.query(sql, values, (error, results) => {
+    if (error) {
+      console.error('Error adding review:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Review added successfully');
+      res.sendStatus(200);
+    }
+    connection.end();
+  });
 });
-
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version
+//app.listen(port, '172.31.31.77'); //for the deployed version, specify the IP address of the server
