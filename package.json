@@ -17,6 +17,8 @@
     "yarn": "^1.22.19"
   },
   "devDependencies": {
-    "concurrently": "^8.0.1"
+    "concurrently": "^8.0.1",
+    "cypress": "^13.6.4",
+    "prettier": "^3.2.5"
   }
 }
