@@ -1,7 +1,7 @@
 import React from 'react';
 
 const RecipeFinder = () => {
-  return <div>Hello World</div>;
+  return <div>Changes</div>;
 };
 
 export default RecipeFinder;
