@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
@@ -51,6 +51,32 @@ app.post('/api/addReview', (req, res) => {
       return res
         .status(500)
         .json({error: 'Error adding review to the database'});
+    }
+
+    return res.status(200).json({success: true});
+  });
+  connection.end();
+});
+
+
+// API to add new user to database 
+
+app.post('/api/SignUp', (req, res) => {
+  const {firstName, lastName, userName, email, password} = req.body;
+
+  let connection = mysql.createConnection(config);
+
+  const sql = `INSERT INTO users (firstName, lastName, userName, email, password) 
+				 VALUES (?, ?, ?, ?, ?)`;
+
+  const data = [firstName, lastName, userName, email, password];
+
+  connection.query(sql, data, (error, results, fields) => {
+    if (error) {
+      console.error('Error adding user:', error.message);
+      return res
+        .status(500)
+        .json({error: 'Error adding user to the database'});
     }
 
     return res.status(200).json({success: true});
