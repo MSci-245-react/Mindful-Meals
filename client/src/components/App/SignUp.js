@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
 
 const serverURL = "";
 
 const SignUp = () => {
-
     // create the states of the various fields 
     const[firstName, setFirstName] = useState('');
     const[lastName, setLastName] = useState('');
@@ -134,14 +132,12 @@ const SignUp = () => {
                 setUserName('');
                 setEmail('');
                 setPassword('');
-                //navigate('/signin');
               })
               .catch(error => {
                 console.error("Error adding user:", error.message);
               });
         }
       };
-
     
     return (
         <div className='container'>
@@ -166,7 +162,7 @@ const SignUp = () => {
                 <button type="submit">Sign Up</button>
             </form>
 
-            {showConfirmation && <p>Sign up successful!</p>}
+            {showConfirmation && <p>Sign up successful! Redirecting...</p>}
             
         </div>
     );
