@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+import './SignUp.css';
 
 const serverURL = "";
 
@@ -10,8 +12,10 @@ const SignUp = () => {
     const[userName, setUserName] = useState('');
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
+    const [isValiid, setIsValid] = useState(true);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [errors, setErrors] = useState({});
+    // const navigate = useNavigate();
 
 
     const handleFirstNameChange = (event) => {
@@ -67,6 +71,11 @@ const SignUp = () => {
         return body;
     }
 
+    const isValidEmail= (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
     // once the button is pressed, we are checking if all the fields are filled 
     const handleSubmit = (event) => { 
         event.preventDefault();
@@ -94,6 +103,11 @@ const SignUp = () => {
             newErrors.password = true;
             hasErrors = true;
           }
+        
+        if(!isValidEmail(email)) {
+            newErrors.email = true;
+            hasErrors = true;
+        }
     
         // if there is any errors, we update the state of setErrors, and confirmation 
         if (hasErrors) {
@@ -115,6 +129,12 @@ const SignUp = () => {
                 console.log("callApiAddUser response: ", res);
                 setShowConfirmation(true);
                 setErrors({});
+                setFirstName('');
+                setLastName('');
+                setUserName('');
+                setEmail('');
+                setPassword('');
+                //navigate('/signin');
               })
               .catch(error => {
                 console.error("Error adding user:", error.message);
@@ -124,7 +144,7 @@ const SignUp = () => {
 
     
     return (
-        <div>
+        <div className='container'>
             <h1>Sign Up</h1>
             <form onSubmit={handleSubmit}>
 
