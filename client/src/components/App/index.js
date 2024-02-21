@@ -1,8 +1,9 @@
 import React from 'react';
 import Review from './Review';
+import SignUp from './SignUp';
 
 function App() {
-  return <Review />;
+  return <SignUp />;
 }
 
 export default App;
