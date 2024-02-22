@@ -1,0 +1,20 @@
+/* Adjustments to recipeFinder.css */
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 80px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.heading-text {
+  text-align: center;
+  margin: 5px 0;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.ingredient-input {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
