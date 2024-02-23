@@ -58,8 +58,7 @@ app.post('/api/addReview', (req, res) => {
   connection.end();
 });
 
-
-// API to add new user to database 
+// API to add new user to database
 
 app.post('/api/SignUp', (req, res) => {
   const {firstName, lastName, userName, email, password} = req.body;
@@ -74,12 +73,26 @@ app.post('/api/SignUp', (req, res) => {
   connection.query(sql, data, (error, results, fields) => {
     if (error) {
       console.error('Error adding user:', error.message);
-      return res
-        .status(500)
-        .json({error: 'Error adding user to the database'});
+      return res.status(500).json({error: 'Error adding user to the database'});
     }
 
     return res.status(200).json({success: true});
+  });
+  connection.end();
+});
+
+// API to read recipes from the database
+app.post('/api/getRecipes', (req, res) => {
+  let connection = mysql.createConnection(config);
+
+  const sql = `SELECT RecipeId, Name, Description, RecipeIngredientParts FROM recipes`;
+
+  connection.query(sql, (error, results, fields) => {
+    if (error) {
+      return console.error(error.message);
+    }
+    let string = JSON.stringify(results);
+    res.send({express: string});
   });
   connection.end();
 });
