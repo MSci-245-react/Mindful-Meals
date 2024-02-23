@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import './SignUp.css';
 
 const serverURL = '';
@@ -101,10 +102,10 @@ const SignUp = () => {
       hasErrors = true;
     }
 
-    if (!isValidEmail(email)) {
-      newErrors.email = true;
-      hasErrors = true;
-    }
+    // if (!isValidEmail(email)) {
+    //   newErrors.email = true;
+    //   hasErrors = true;
+    // }
 
     // if there is any errors, we update the state of setErrors, and confirmation
     if (hasErrors) {
@@ -210,7 +211,8 @@ const SignUp = () => {
         <button type="submit">Sign Up</button>
       </form>
 
-      {showConfirmation && <p>Sign up successful! Redirecting...</p>}
+      {showConfirmation && 
+      <p>Sign up successful! Redirecting...</p>}
     </div>
   );
 };

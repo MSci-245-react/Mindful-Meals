@@ -87,6 +87,11 @@ const NavigationBar = () => {
                 Find Recipes
               </Link>
             </li>
+            <li>
+              <Link component={RouterLink} to="/SignIn">
+                SignIn
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>
