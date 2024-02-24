@@ -85,7 +85,7 @@ app.post('/api/SignUp', (req, res) => {
 app.post('/api/getRecipes', (req, res) => {
   let connection = mysql.createConnection(config);
 
-  const sql = `SELECT RecipeId, Name, Description, RecipeIngredientParts FROM recipes`;
+  const sql = `SELECT RecipeId, Name, Description, RecipeIngredientParts, KeyWords FROM recipes`;
 
   connection.query(sql, (error, results, fields) => {
     if (error) {
