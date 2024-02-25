@@ -84,4 +84,30 @@ app.post('/api/SignUp', (req, res) => {
   connection.end();
 });
 
+app.post('/api/signIn', (req, res) => {
+  const { userName, password } = req.body;
+
+  let connection = mysql.createConnection(config);
+
+  const sql = `SELECT * FROM users WHERE userName = ? AND password = ?`;
+
+  const data = [userName, password];
+
+  connection.query(sql, data, (error, results, fields) => {
+    if (error) {
+      console.error('Error authenticating user:', error.message);
+      return res.status(500).json({ error: 'Error authenticating user' });
+    }
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    return res.status(200).json({ success: true, user: results[0] });
+  });
+
+  connection.end();
+});
+
+
 app.listen(port, () => console.log(`Listening on port ${port}`)); //for the dev version

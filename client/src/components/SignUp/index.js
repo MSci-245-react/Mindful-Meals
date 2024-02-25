@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import './SignUp.css';
 
+
 const serverURL = '';
 
 const SignUp = () => {
@@ -132,6 +133,8 @@ const SignUp = () => {
           setUserName('');
           setEmail('');
           setPassword('');
+          history.push("/Review");
+
         })
         .catch(error => {
           console.error('Error adding user:', error.message);

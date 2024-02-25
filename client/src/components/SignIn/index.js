@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// import { Redirect } from 'react-router-dom';
+
 
 const serverURL = "";
 
@@ -29,25 +31,24 @@ const SignIn = () => {
             });
       
             if (response.ok) {
-              setIsLoggedIn(true);
+              setLoggedIn(true);
             } else {
               const errorData = await response.json();
-              setError(errorData.error || 'Sign-in failed');
+              setErrors(errorData.error || 'Sign-in failed');
             }
           } catch (error) {
-            setError('An error occurred while signing in');
+            setErrors('An error occurred while signing in');
             console.error('Error signing in:', error);
           }
 
-          if (LoggedIn) {
-            // Redirect the user to the dashboard or home page
-            return <Redirect to="/Review" />;
+          if (loggedIn) {
+            
           }
 
     };
 
     return (
-        <div>
+        <div className='container'>
           <h1>Sign In</h1>
           <form onSubmit={handleSubmit}>
             <input
@@ -71,6 +72,8 @@ const SignIn = () => {
             <button type="submit">Sign In</button>
           </form>
           {error && <p>{error}</p>}
+          {loggedIn && 
+          <p>Sign In Successful!</p>}
         </div>
       );
 }

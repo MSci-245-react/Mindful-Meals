@@ -83,13 +83,13 @@ const NavigationBar = () => {
               </Link>
             </li>
             <li>
-              <Link component={RouterLink} to="/RecipeFinder">
-                Find Recipes
+              <Link component={RouterLink} to="/SignIn">
+                Sign In
               </Link>
             </li>
             <li>
-              <Link component={RouterLink} to="/SignIn">
-                SignIn
+              <Link component={RouterLink} to="/RecipeFinder">
+                Find Recipes
               </Link>
             </li>
           </ul>
