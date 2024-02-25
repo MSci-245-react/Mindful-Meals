@@ -133,7 +133,6 @@ const SignUp = () => {
           setUserName('');
           setEmail('');
           setPassword('');
-          history.push("/Review");
 
         })
         .catch(error => {
