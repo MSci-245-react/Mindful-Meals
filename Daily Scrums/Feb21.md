@@ -13,6 +13,6 @@ Vardhman:
 
 Kirti:
 
-- What did I do Yesterday:
-- What was in the way:
-- What will I do Today:
+- What did I do Yesterday: Created SignIn page and working on profile page
+- What was in the way: Issues accessing SQL DB
+- What will I do Today: Finish profile page
