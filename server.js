@@ -159,23 +159,19 @@ app.post('/api/getRecipes', (req, res) => {
   connection.end();
 });
 
-app.get('/api/getNutritionalInfo', (req, res) => {
+app.post('/api/getNutritionalInfo', (req, res) => {
   let connection = mysql.createConnection(config);
 
-  const sql = 'SELECT * FROM nutrition';
+  const sql = `SELECT * FROM nutrition`;
 
   connection.query(sql, (error, results, fields) => {
-    connection.end();
-
     if (error) {
-      console.error('Error querying the database:', error);
-      res
-        .status(500)
-        .send('Error retrieving nutritional information from the database');
-    } else {
-      res.json(results);
+      return console.error(error.message);
     }
+    let string = JSON.stringify(results);
+    res.send({express: string});
   });
+  connection.end();
 });
 
 
