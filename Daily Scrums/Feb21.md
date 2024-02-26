@@ -16,5 +16,3 @@ Kirti:
 - What did I do Yesterday:
 - What was in the way:
 - What will I do Today:
-
--Designing sign up
