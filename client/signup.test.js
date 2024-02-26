@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import SignUp from './src/components/SignUp';
 
-
+// This jest tests if all the relevant textboxes are there
 describe('SignUp', ()=> {
     test('renders sign up form', () => {
 

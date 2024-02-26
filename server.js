@@ -169,5 +169,24 @@ app.get('/api/getNutritionalInfo', (req, res) => {
   });
 });
 
+// API to read recipes from the database
+app.post('/api/getRecipes', (req, res) => {
+  let connection = mysql.createConnection(config);
+ 
+ 
+  const sql = `SELECT RecipeId, Name, Description, RecipeIngredientParts, KeyWords FROM recipes`;
+ 
+ 
+  connection.query(sql, (error, results, fields) => {
+    if (error) {
+      return console.error(error.message);
+    }
+    let string = JSON.stringify(results);
+    res.send({express: string});
+  });
+  connection.end();
+ });
+ 
 
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
