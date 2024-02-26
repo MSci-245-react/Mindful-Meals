@@ -1,6 +1,9 @@
-describe('empty spec', () => {
-  it('can view the home page', () => {
+describe('Recipe App', () => {
+  beforeEach(() => {
+    // Assuming the recipe page is the root page
     cy.visit('/');
-    cy.contains('Review a movie');
+  });
+  it('displays the homepage title', () => {
+    cy.contains('Mindful Meals');
   });
 });
