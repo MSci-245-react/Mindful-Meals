@@ -1,0 +1,79 @@
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 80px;
+  width: 800px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.heading-text {
+  text-align: center;
+  margin: 5px 0;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.subheading-text {
+  text-align: center;
+  margin: 5px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ingredient-input {
+  display: flex;
+  align-items: left;
+}
+
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.recipe-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.recipe-title {
+  font-weight: bold;
+}
+
+.recipe-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recipe-buttons button {
+  width: 400px; /* Example width; adjust as needed */
+  margin: 0 auto; /* Center the button in the flex container */
+  padding: 5px;
+}
+
+.dietary-restrictions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ingredients-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between boxes */
+  justify-content: center; /* Center boxes */
+  padding: 5px 0;
+}
+
+.ingredient-box {
+  padding: 5px 10px;
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 5px; /* Rounded corners */
+  background-color: #f0f0f0; /* Light gray background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
+}
