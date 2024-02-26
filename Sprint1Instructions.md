@@ -6,17 +6,17 @@ We offer a platform where users can find new recipes they can cook with ingredie
 
 ## Functionalities
 
-# Sign In/ Sign Up
+### Sign In/ Sign Up
 
 This functionality allows users to make a personal account using their first and last name, email address and a password. If all the fields are successfully added to the fields and the account doesn’t already exist then, the user is successfully able to sign into their accounts and access their profile page.
 
 To test the sign up functionality, a jest test was created to test if the relevant text boxes are seen in the page
 
-# Nutritional Information
+### Nutritional Information
 
 This functionality allows users to browse nutritional information on ingredients
 
-# Recipe Finder
+### Recipe Finder
 
 This functionality allows users to search for recipes and filter by specific criteria. Users can filter by ingredients as well as dietary restriction,
 
