@@ -1,57 +1,55 @@
 import React, {useEffect, useState} from 'react';
 import './NutritionalInformationTable.css';
 
+const serverURL = '';
+
 const NutritionalInformationTable = () => {
   const [nutritionalData, setNutritionalData] = useState([]);
 
   useEffect(() => {
-    fetch('/api/getNutritionalInfo') // Update this to match your correct backend endpoint
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => setNutritionalData(data))
-      .catch(error => {
-        console.error(
-          'There has been a problem with your fetch operation:',
-          error,
-        );
-      });
+    getNutritionalData(); // Fetch nutritional data on component mount
   }, []);
+
+  const getNutritionalData = () => {
+    callApiGetNutritionalInformation()
+      .then(res => {
+        console.log('callApiGetNutritionalInformation returned: ', res);
+        // Assuming `res.express` is the correct path; adjust according to your actual response structure
+        const parsed = JSON.parse(res.express);
+        console.log('callApiGetNutritionalInformation parsed: ', parsed);
+        setNutritionalData(parsed);
+      })
+      .catch(error => console.error('Fetching error: ', error));
+  };
+
+  const callApiGetNutritionalInformation = async () => {
+    const url = `${serverURL}/api/getNutritionalInfo`; // Corrected template literal syntax
+    console.log(url);
+    const response = await fetch(url, {
+      method: 'POST', // Make sure 'POST' is the correct method; otherwise, use 'GET' if you're retrieving data
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw Error(`HTTP error! status: ${response.status}`); // Corrected template literal syntax
+    return await response.json();
+  };
 
   return (
     <table>
       <thead>
         <tr>
           <th>Name</th>
-          <th>Calories</th>
-          <th>Fat Content</th>
-          <th>Saturated Fat</th>
-          <th>Cholesterol</th>
-          <th>Sodium</th>
-          <th>Carbohydrates</th>
-          <th>Fiber</th>
-          <th>Sugar</th>
-          <th>Protein</th>
-          {/* Add more headers as needed */}
+          <th>Protein (g)</th>
+          <th>Carbohydrates (g)</th>
         </tr>
       </thead>
       <tbody>
         {nutritionalData.map((item, index) => (
           <tr key={index}>
-            <td>{item.Name}</td>
-            <td>{item.Calories}</td>
-            <td>{item.FatContent}</td>
-            <td>{item.SaturatedFatContent}</td>
-            <td>{item.CholesterolContent}</td>
-            <td>{item.SodiumContent}</td>
-            <td>{item.CarbohydrateContent}</td>
-            <td>{item.FiberContent}</td>
-            <td>{item.SugarContent}</td>
-            <td>{item.ProteinContent}</td>
-            {/* Render more data as needed */}
+            <td>{item.Shrt_Desc}</td>
+            <td>{item['Protein_(g)']}</td>
+            <td>{item['Carbohydrt_(g)']}</td>
           </tr>
         ))}
       </tbody>
