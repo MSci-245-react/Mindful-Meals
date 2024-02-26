@@ -165,5 +165,33 @@ app.post('/api/getRecipes', (req, res) => {
   connection.end();
 });
 
+const readCSVFile = () => {
+  return new Promise((resolve, reject) => {
+    let results = [];
+    fs.createReadStream('./recipe_sample.csv') // make sure the path is correct
+      .pipe(csv())
+      .on('data', (data) => results.push(data))
+      .on('end', () => {
+        resolve(results);
+      })
+      .on('error', (error) => {
+        reject(error);
+      });
+  });
+};
+
+
+// API endpoint to serve the nutritional information from the CSV file
+app.get('/api/getNutritionalInfo', async (req, res) => {
+  try {
+    const data = await readCSVFile();
+    res.json(data);
+  } catch (error) {
+    console.error('Error reading CSV file:', error);
+    res.status(500).send('Error reading nutritional information');
+  }
+});
+
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
