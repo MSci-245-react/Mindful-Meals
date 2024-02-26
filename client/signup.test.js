@@ -11,12 +11,14 @@ describe('SignUp', ()=> {
         render(<SignUp />);
 
         expect(screen.getByText('Sign Up')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Sign Up')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Sign Up')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Sign Up')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Sign Up')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('First Name')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Last Name')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Sign Up' })).toBeInTheDocument();
 
-    })
+    });
 
 
-})
+});
