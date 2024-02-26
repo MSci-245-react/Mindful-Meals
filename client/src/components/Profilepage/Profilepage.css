@@ -1,0 +1,32 @@
+
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+  }
+  
+  .profile-info {
+    text-align: center; 
+  }
+  
+  .profile-pic img {
+    width: 150px; 
+    border-radius: 50%; 
+  }
+  
+  .profile-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .greeting {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .email, .password, .bio, .dietary-restrictions {
+    margin: 5px 0;
+  }
+  
