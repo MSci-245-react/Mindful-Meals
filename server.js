@@ -150,48 +150,24 @@ app.post('/api/profilePage', (req, res) => {
 });
 
 // API to read recipes from the database
-app.post('/api/getRecipes', (req, res) => {
+
+app.get('/api/getNutritionalInfo', (req, res) => {
   let connection = mysql.createConnection(config);
 
-  const sql = `SELECT RecipeId, Name, Description, RecipeIngredientParts, KeyWords FROM recipes`;
+   
+  const sql = 'SELECT * FROM nutrition'; 
 
   connection.query(sql, (error, results, fields) => {
+    connection.end(); 
+
     if (error) {
-      return console.error(error.message);
+      console.error('Error querying the database:', error);
+      res.status(500).send('Error retrieving nutritional information from the database');
+    } else {
+      res.json(results); 
     }
-    let string = JSON.stringify(results);
-    res.send({express: string});
   });
-  connection.end();
-});
-
-const readCSVFile = () => {
-  return new Promise((resolve, reject) => {
-    let results = [];
-    fs.createReadStream('./recipe_sample.csv') // make sure the path is correct
-      .pipe(csv())
-      .on('data', (data) => results.push(data))
-      .on('end', () => {
-        resolve(results);
-      })
-      .on('error', (error) => {
-        reject(error);
-      });
-  });
-};
-
-
-// API endpoint to serve the nutritional information from the CSV file
-app.get('/api/getNutritionalInfo', async (req, res) => {
-  try {
-    const data = await readCSVFile();
-    res.json(data);
-  } catch (error) {
-    console.error('Error reading CSV file:', error);
-    res.status(500).send('Error reading nutritional information');
-  }
 });
 
 
-
-app.listen(port, () => console.log(`Listening on port ${port}`));
+  app.listen(port, () => console.log(`Listening on port ${port}`));
