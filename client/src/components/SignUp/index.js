@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import './SignUp.css';
+
 
 const serverURL = '';
 
 const SignUp = () => {
+
   // create the states of the various fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -48,6 +51,10 @@ const SignUp = () => {
     setPassword(event.target.value);
     setErrors(prevErrors => ({...prevErrors, password: false}));
     setShowConfirmation(false);
+  };
+
+  const handleRedirect = () => {
+    window.location.href='/SignIn';
   };
 
   // function to call the sign up api function
@@ -131,6 +138,11 @@ const SignUp = () => {
           setUserName('');
           setEmail('');
           setPassword('');
+          
+          setTimeout(() => {
+            handleRedirect();
+          }, 5000);
+        
         })
         .catch(error => {
           console.error('Error adding user:', error.message);
@@ -210,7 +222,8 @@ const SignUp = () => {
         <button type="submit">Sign Up</button>
       </form>
 
-      {showConfirmation && <p>Sign up successful! Redirecting...</p>}
+      {showConfirmation &&
+      <p>Sign up successful! Redirecting...</p>}
     </div>
   );
 };

@@ -73,13 +73,23 @@ const NavigationBar = () => {
         <div className="menu">
           <div className="logo">
             <Link component={RouterLink} to="/">
-              Recipe Finder
+              Mindful Meals
             </Link>
           </div>
           <ul>
             <li>
               <Link component={RouterLink} to="/SignUp">
                 Sign Up
+              </Link>
+            </li>
+            <li>
+              <Link component={RouterLink} to="/SignIn">
+                Sign In
+              </Link>
+            </li>
+            <li>
+              <Link component={RouterLink} to="/NutritionalInformation">
+                Nutritional Info
               </Link>
             </li>
             <li>
