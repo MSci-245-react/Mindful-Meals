@@ -13,7 +13,8 @@ Vardhman:
 
 Kirti:
 
-- What did I do Yesterday: Finished signin page and worked on profile page
-- What was in the way: profile page content not appearing
-- What will I do Today: Finish profile page
+- What did I do Yesterday:
+- What was in the way:
+- What will I do Today:
 
+-Designing sign up
