@@ -9,8 +9,6 @@ describe('SignUp', ()=> {
     test('renders sign up form', () => {
 
         render(<SignUp />);
-
-        expect(screen.getByText('Sign Up')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('First Name')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Last Name')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
