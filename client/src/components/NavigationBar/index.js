@@ -70,21 +70,7 @@ const NavigationBar = () => {
         `}
       </style>
       <nav>
-         <div>
-      <Router>
-        <NavigationBar />
-        <Routes>
-          <Route path="/Signup" element={<SignUp />} />
-          <Route path="/RecipeFinder" element={<RecipeFinder />} />
-          <Route path="/SignIn" element={<SignIn />} />
-        </Routes>
-      </Router>
-    </div>
-  );
-}
-
-export default App;
-<div className="menu">
+        <div className="menu">
           <div className="logo">
             <Link component={RouterLink} to="/">
               Recipe Finder
