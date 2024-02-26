@@ -18,6 +18,11 @@ const SignIn = () => {
         setPassword(event.target.value);
     }
 
+    const handleRedirect = () => {
+      window.location.href='/Profilepage';
+    };
+  
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         
@@ -32,6 +37,14 @@ const SignIn = () => {
       
             if (response.ok) {
               setLoggedIn(true);
+
+              localStorage.setItem('userName', userName);
+              localStorage.setItem('password', password);
+              
+              setTimeout(() => {
+                handleRedirect();
+              }, 3000);
+
             } else {
               const errorData = await response.json();
               setErrors(errorData.error || 'Sign-in failed');
@@ -40,11 +53,6 @@ const SignIn = () => {
             setErrors('An error occurred while signing in');
             console.error('Error signing in:', error);
           }
-
-          if (loggedIn) {
-            
-          }
-
     };
 
     return (
