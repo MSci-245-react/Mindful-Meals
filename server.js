@@ -174,5 +174,4 @@ app.post('/api/getNutritionalInfo', (req, res) => {
   connection.end();
 });
 
-
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(port, () => console.log(`Listening on port ${port}`));
