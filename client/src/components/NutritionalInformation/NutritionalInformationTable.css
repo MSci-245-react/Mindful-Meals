@@ -1,7 +1,7 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px; /* Adjust as needed */
+  margin-top: 80px; /* Increased space above the table if needed */
 }
 
 th,
@@ -17,8 +17,10 @@ th {
 }
 
 .search-container {
-  margin-top: 20px;
+  margin-top: 100px; /* Increased top margin to move the search bar down */
   margin-bottom: 20px;
+  display: flex; /* Added to align the search input and button inline */
+  justify-content: center; /* Added to center the search bar and button */
 }
 
 .search-input {
@@ -26,6 +28,7 @@ th {
   margin-right: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  width: 300px; /* You can set a fixed width or percentage as per your design */
 }
 
 .search-button {
