@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
 import './recipeFinder.css';
 
 const serverURL = ' ';
@@ -189,7 +190,9 @@ const RecipeFinder = () => {
             <tbody>
               {currentRecipes.map((recipe, index) => (
                 <tr key={index}>
-                  <td>{recipe.Name}</td>
+                  <td>
+                    <Link to={`/recipe/${recipe.RecipeId}`}>{recipe.Name}</Link>
+                  </td>
                   <td>
                     {recipe.RecipeIngredientParts.replace('c(', '')
                       .replace(')', '')

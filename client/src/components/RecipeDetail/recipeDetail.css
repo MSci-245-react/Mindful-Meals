@@ -1,0 +1,7 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 80px;
+  width: 800px;
+  font-family: 'Poppins', sans-serif;
+}

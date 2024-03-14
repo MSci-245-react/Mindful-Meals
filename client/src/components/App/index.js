@@ -1,10 +1,10 @@
 import React from 'react';
-import Review from './Review';
 import SignUp from '../SignUp';
 import SignIn from '../SignIn';
 import HomePage from '../HomePage';
 import NutritionalInformation from '../NutritionalInformation';
 import RecipeFinder from '../RecipeFinder';
+import RecipeDetail from '../RecipeDetail';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import NavigationBar from '../NavigationBar';
 
@@ -22,6 +22,7 @@ function App() {
             path="/NutritionalInformation"
             element={<NutritionalInformation />}
           />
+          <Route path="/recipe/:RecipeId" element={<RecipeDetail />} />
         </Routes>
       </Router>
     </div>
