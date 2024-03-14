@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
 import './recipeFinder.css';
 
 const serverURL = ' ';
@@ -8,6 +9,13 @@ const RecipeFinder = () => {
   const [ingredientsArray, setIngredientsArray] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [dietaryRestrictionsArray, setDietaryRestrictionsArray] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
+  const lastRowIndex = currentPage * itemsPerPage;
+  const firstRowIndex = lastRowIndex - itemsPerPage;
+  const currentRecipes = recipes.slice(firstRowIndex, lastRowIndex);
+  const totalPages = Math.ceil(recipes.length / itemsPerPage);
 
   const getRecipes = () => {
     callApiGetRecipes().then(res => {
@@ -55,7 +63,7 @@ const RecipeFinder = () => {
         );
 
       // Check for dietary restrictions
-      const recipeDietaryRestrictionsLower = recipe.KeyWords.toLowerCase();
+      const recipeDietaryRestrictionsLower = recipe.Keywords.toLowerCase();
       const dietaryRestrictionsMatch =
         !Array.isArray(dietaryRestrictionsArray) ||
         dietaryRestrictionsArray.length === 0 ||
@@ -106,6 +114,14 @@ const RecipeFinder = () => {
   const clearIngredients = () => {
     setIngredientsArray([]);
     setIngredientInput('');
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage(current => Math.min(current + 1, totalPages));
+  };
+
+  const goToPreviousPage = () => {
+    setCurrentPage(current => Math.max(current - 1, 1));
   };
 
   return (
@@ -163,25 +179,44 @@ const RecipeFinder = () => {
         <button onClick={clearSearch}>Clear Recipes</button>
       </div>
       {recipes.length > 0 && (
-        <div className="recipes-grid">
-          {recipes.map(recipe => (
-            <div key={recipe.id} className="recipe-card">
-              <div className="recipe-title">{recipe.Name}</div>
-              <div>Recipe ID: {recipe.RecipeId}</div>
-              <div>
-                Ingredients:{' '}
-                {
-                  recipe.RecipeIngredientParts.replace('c(', '') // Remove 'c('
-                    .replace(')', '') // Remove ')'
-                    .replaceAll('"', '') // Remove all '"'
-                }
-              </div>
-            </div>
-          ))}
-        </div>
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Ingredients</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRecipes.map((recipe, index) => (
+                <tr key={index}>
+                  <td>
+                    <Link to={`/recipe/${recipe.RecipeId}`}>{recipe.Name}</Link>
+                  </td>
+                  <td>
+                    {recipe.RecipeIngredientParts.replace('c(', '')
+                      .replace(')', '')
+                      .replaceAll('"', '')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="pagination">
+            <button onClick={goToPreviousPage} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={goToNextPage} disabled={currentPage >= totalPages}>
+              Next
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
-}; 
+};
 
 export default RecipeFinder;

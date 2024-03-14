@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
+import './recipeDetail.css';
 
 const serverURL = ''; // Make sure to set your actual server URL here
 
@@ -9,10 +10,10 @@ const RecipeDetail = () => {
 
   useEffect(() => {
     const callApiGetRecipes = async () => {
-      const url = `${serverURL}/api/getRecipes`; // Adjust if your API endpoint differs
+      const url = `${serverURL}/api/getRecipes`;
       try {
         const response = await fetch(url, {
-          method: 'POST', // Use 'GET' if fetching data
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -22,7 +23,7 @@ const RecipeDetail = () => {
         }
         const body = await response.json();
         console.log('Fetched recipes:', body);
-        const parsed = JSON.parse(body.express); // Adjust according to the actual structure of your response
+        const parsed = JSON.parse(body.express);
         findRecipe(parsed, RecipeId); // Call findRecipe with the parsed data
       } catch (error) {
         console.error('Fetching error:', error);
@@ -30,23 +31,65 @@ const RecipeDetail = () => {
     };
 
     callApiGetRecipes();
-  }, [RecipeId]); // Depend on RecipeId to refetch if it changes
+  }, [RecipeId]);
 
   const findRecipe = (recipes, recipeId) => {
-    const id = Number(recipeId); // Convert RecipeId to Number if it's a string
-    // Assuming recipe.id should match RecipeId; adjust "id" to the actual property name if different
+    const id = Number(recipeId);
     const foundRecipe = recipes.find(recipe => recipe.RecipeId === id);
-    setCurrentRecipe(foundRecipe); // Set the found recipe
+    setCurrentRecipe(foundRecipe);
   };
 
+  const parseString = inputString => {
+    return inputString
+      .slice(3, -2)
+      .split(',')
+      .map(item => item.trim().replace(/"/g, ''));
+  };
+
+  let matches = [];
+  if (currentRecipe) {
+    const quantities = parseString(currentRecipe.RecipeIngredientQuantities);
+    const ingredients = parseString(currentRecipe.RecipeIngredientParts);
+
+    matches = quantities.map((quantity, index) => {
+      return {quantity: quantity, ingredient: ingredients[index]};
+    });
+  }
+
+  let numberedInstructions = [];
+  if (currentRecipe && currentRecipe.RecipeInstructions) {
+    numberedInstructions = currentRecipe.RecipeInstructions.slice(3, -2)
+      .split('", "')
+      .map(item => item.trim().replace(/"/g, ''));
+  }
+
   return (
-    <div className="container">
-      <h2>Recipe Details for ID: {RecipeId}</h2>
+    <div className="recipe-container">
       {currentRecipe ? (
-        <div>
-          <h3>{currentRecipe.Name}</h3>
-          {/* Display more details of the currentRecipe here */}
-        </div>
+        <>
+          <div>
+            <h2 className="main-header">{currentRecipe.Name}</h2>
+            <p>Uploaded By: {currentRecipe.AuthorName}</p>
+            <div>
+              <h3 className="headings">Ingredients</h3>
+              <ul className="instructions-ingredient-font">
+                {matches.map((match, index) => (
+                  <li key={index}>
+                    {match.quantity} {match.ingredient}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="headings">Instructions</h3>
+              <ol className="instructions-ingredient-font">
+                {numberedInstructions.map((instr, index) => (
+                  <li key={index}>{instr}</li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </>
       ) : (
         <p>Loading recipe details...</p>
       )}

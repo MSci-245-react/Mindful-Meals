@@ -149,7 +149,7 @@ app.get("/api/getRecipes", (req, res) => {
 app.post("/api/getRecipes", (req, res) => {
   let connection = mysql.createConnection(config);
 
-  const sql = `SELECT RecipeId, Name, Description, RecipeIngredientParts, KeyWords FROM recipes`;
+  const sql = `SELECT * FROM recipes`;
 
   connection.query(sql, (error, results, fields) => {
     if (error) {

@@ -1,7 +1,18 @@
-.container {
-  max-width: 600px;
+.recipe-container {
+  max-width: 800px;
   margin: 0 auto;
-  margin-top: 80px;
-  width: 800px;
-  font-family: 'Poppins', sans-serif;
+  margin-top: 90px;
+  width: 500px;
+}
+
+.instructions-ingredient-font {
+  font-size: 11px;
+}
+
+.main-header {
+  text-align: center;
+}
+
+.headings {
+  text-align: center;
 }
