@@ -24,24 +24,19 @@ const NutritionalInformationTable = () => {
     const url = `${serverURL}/api/getNutritionalInfo`;
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',  
-      },  
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     if (!response.ok) throw Error(`HTTP error! status: ${response.status}`);
     return await response.json();
   };
 
-  // Function to handle the search on click of the search button
-  const handleSearch = () => {
-    // Set the nameFilter to the searchTerm to filter the results
-    setNameFilter(searchTerm);
-  };
-
   // Filter the data based on the search term
-  const filteredNutritionalData = nutritionalData.filter(item => 
-    item.Shrt_Desc.toLowerCase().includes(nameFilter.toLowerCase())
-  );
+  const filteredNutritionalData = searchTerm
+    ? nutritionalData.filter(item =>
+        item.Shrt_Desc.toLowerCase().includes(searchTerm.toLowerCase()))
+    : nutritionalData;
 
   return (
     <>
@@ -53,7 +48,7 @@ const NutritionalInformationTable = () => {
           placeholder="Search ingredients..."
           className="search-input"
         />
-        <button onClick={handleSearch} className="search-button">
+        <button onClick={() => setSearchTerm(searchTerm)} className="search-button">
           Search
         </button>
       </div>
@@ -64,23 +59,21 @@ const NutritionalInformationTable = () => {
             <th>Protein (g)</th>
             <th>Carbohydrates (g)</th>
             <th>Water (g)</th>
-            <th>Energ_Kcal</th>
-            <th>Lipid_Tot</th>
-            <th>Ash</th>
-
+            <th>Energy (kcal)</th>
+            <th>Total Fat (g)</th>
+            <th>Ash (g)</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody>   
           {filteredNutritionalData.map((item, index) => (
             <tr key={index}>
               <td>{item.Shrt_Desc}</td>
               <td>{item['Protein_(g)']}</td>
               <td>{item['Carbohydrt_(g)']}</td>
-              <td>{item['Water_(g)']}</td> 
+              <td>{item['Water_(g)']}</td>
               <td>{item['Energ_Kcal']}</td>
-              <td>{item['Lipid_Tot_']}</td> 
+              <td>{item['Lipid_Tot_(g)']}</td>
               <td>{item['Ash_(g)']}</td>
-
             </tr>
           ))}
         </tbody>
@@ -89,4 +82,4 @@ const NutritionalInformationTable = () => {
   );
 };
 
-export default NutritionalInformationTable; 
+export default NutritionalInformationTable;
