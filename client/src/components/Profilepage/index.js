@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import './ProfilePage.css'; 
-import profilePic from 'client/src/components/Profilepage/profile-pic.jpg';
+import './Profilepage.css'; 
+
 
 const ProfilePage = (props) => {
     

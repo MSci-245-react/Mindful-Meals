@@ -2,6 +2,7 @@ import React from 'react';
 import SignUp from '../SignUp';
 import SignIn from '../SignIn';
 import HomePage from '../HomePage';
+import Profilepage from '../Profilepage'
 import NutritionalInformation from '../NutritionalInformation';
 import RecipeFinder from '../RecipeFinder';
 import RecipeDetail from '../RecipeDetail';
@@ -18,6 +19,7 @@ function App() {
           <Route path="/Signup" element={<SignUp />} />
           <Route path="/RecipeFinder" element={<RecipeFinder />} />
           <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/Profilepage" element={<Profilepage />} />
           <Route
             path="/NutritionalInformation"
             element={<NutritionalInformation />}
