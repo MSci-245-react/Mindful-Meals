@@ -120,6 +120,8 @@ app.post("/api/profilePage", (req, res) => {
       lastName: userData.lastName,
       email: userData.email,
       password: userData.password,
+      bio: userData.bio || '',
+      dietaryRestrictions: userData.dietaryRestrictions || {},
     });
   });
 });
