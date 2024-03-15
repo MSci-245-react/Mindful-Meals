@@ -48,32 +48,39 @@ const NutritionalInformationTable = () => {
           placeholder="Search ingredients..."
           className="search-input"
         />
-        <button onClick={() => setSearchTerm(searchTerm)} className="search-button">
-          Search
-        </button>
       </div>
       <table>
         <thead>
           <tr>
-            <th>Name</th>
+            <th className="name-column">Name</th>
             <th>Protein (g)</th>
             <th>Carbohydrates (g)</th>
             <th>Water (g)</th>
             <th>Energy (kcal)</th>
             <th>Total Fat (g)</th>
             <th>Ash (g)</th>
+            <th>Fiber (g)</th>
+            <th>Total Sugar (g)</th>
+            <th>Calcium (mg)</th>
+            <th>Iron (mg)</th>
+            <th>Vitamin C (mg)</th>
           </tr>
         </thead>
         <tbody>   
           {filteredNutritionalData.map((item, index) => (
             <tr key={index}>
-              <td>{item.Shrt_Desc}</td>
+              <td className="name-column">{item.Shrt_Desc}</td> 
               <td>{item['Protein_(g)']}</td>
               <td>{item['Carbohydrt_(g)']}</td>
               <td>{item['Water_(g)']}</td>
               <td>{item['Energ_Kcal']}</td>
               <td>{item['Lipid_Tot_(g)']}</td>
               <td>{item['Ash_(g)']}</td>
+              <td>{item['Fiber_TD_(g)']}</td> 
+              <td>{item['Sugar_Tot_(g)']}</td> 
+              <td>{item['Calcium_(mg)']}</td> 
+              <td>{item['Iron_(mg)']}</td> 
+              <td>{item['Vit_C_(mg)']}</td> 
             </tr>
           ))}
         </tbody>
@@ -82,4 +89,4 @@ const NutritionalInformationTable = () => {
   );
 };
 
-export default NutritionalInformationTable;
+export default NutritionalInformationTable; 
