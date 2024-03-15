@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Container, Typography, TextField, Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Container, Typography, TextField, Button, FormControl, InputLabel, MenuItem, Select, Dialog, DialogTitle, DialogContent, DialogActions  } from '@material-ui/core';
 import defaultProfilePic from './profile-pic.jpg';
+import HomePage from '../HomePage';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,13 +25,7 @@ const ProfilePage = (props) => {
   const [bio, setBio] = useState('');
   const [dietaryRestrictions, setDietaryRestrictions] = useState('');
   const [selectedRestrictions, setSelectedRestrictions] = useState([]);
-//   const [dietaryRestrictions, setDietaryRestrictions] = useState({
-//     lactose: false,
-//     'gluten-free': false,
-//     vegan: false,
-//     vegetarian: false,
-//     'nut allergy': false,
-//   });
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +58,42 @@ const ProfilePage = (props) => {
 
     fetchData();
   }, []);
+
+  const handleDeleteAccount = async () => {
+    try {
+        const userName = localStorage.getItem('userName');
+        const password = localStorage.getItem('password');
+        const response = await fetch('/api/deleteAccount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userName: userName, 
+                password: password,
+            }),
+        });
+
+        if (response.ok) {
+            window.location.href = '/HomePage';
+        } else {
+            const errorData = await response.json();
+            setError(errorData.error || 'Failed to delete account');
+          }
+        } catch (error) {
+          setError('An error occurred while deleting account');
+          console.error('Error deleting account:', error);
+        }
+      };
+
+      const handleOpenDialog = () => {
+        setOpenDialog(true);
+      };
+    
+      const handleCloseDialog = () => {
+        setOpenDialog(false);
+      };
+    
 
   const handleBioChange = (event) => {
     setBio(event.target.value);
@@ -100,7 +131,6 @@ const ProfilePage = (props) => {
       console.error('Error saving changes:', error);
     }
   };
-
   return (
     <Container maxWidth="md" className={classes.profileContainer}>
       <img src={defaultProfilePic} alt="Profile" className={classes.profilePic} style={{ position: 'absolute', top: '60px', right: '80px', width: '300px', height: '300px' }}/>
@@ -147,9 +177,33 @@ const ProfilePage = (props) => {
               <MenuItem value="nut allergy">Nut Allergy</MenuItem>
             </Select>
           </FormControl>
-          <Button variant="contained" color="primary" onClick={saveChanges} className={classes.saveButton} style={{ marginTop: '20px' }}>
+          <Button variant="contained" color="primary" onClick={saveChanges} className={classes.saveButton} style={{ marginTop: '20px', marginRight: '10px' }}>
             Save Changes
           </Button>
+          <Button variant="contained" color="secondary" onClick={handleOpenDialog} className={classes.saveButton} style={{ marginTop: '20px' }}>
+            Delete Account
+          </Button>
+          <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Delete Account"}</DialogTitle>
+            <DialogContent>
+              <Typography variant="body1">
+                Are you sure you want to delete your account?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleDeleteAccount} color="secondary" autoFocus>
+                Yes, Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       ) : (
         <Typography variant="body1">Loading...</Typography>
@@ -160,3 +214,63 @@ const ProfilePage = (props) => {
 };
 
 export default ProfilePage;
+
+//   return (
+//     <Container maxWidth="md" className={classes.profileContainer}>
+//       <img src={defaultProfilePic} alt="Profile" className={classes.profilePic} style={{ position: 'absolute', top: '60px', right: '80px', width: '300px', height: '300px' }}/>
+//       <Typography variant="h4" gutterBottom></Typography>
+//       <Typography variant="h4" gutterBottom>
+//         Profile Page
+//       </Typography>
+//       {userData ? (
+//         <div>
+//           <Typography variant="h5" className={classes.greeting} style={{ marginTop: '50px' }}>
+//             Hi! {userData.firstName} {userData.lastName}
+//           </Typography>
+//           <Typography variant="body1" style={{ marginTop: '50px' }}>Email: {userData.email}</Typography>
+//           <Typography variant="body1" >Password: *********</Typography>
+//           <Typography variant="h6" className={classes.bioHeading} style={{ marginTop: '50px' }}>
+//             Bio
+//           </Typography>
+//           <TextField
+//             label="Bio"
+//             variant="outlined"
+//             className={classes.formControl}
+//             fullWidth
+//             multiline
+//             value={bio}
+//             onChange={handleBioChange}
+//             inputProps={{ maxLength: 200 }}
+//             style={{ maxWidth: '500px' }}
+//           />
+//           <FormControl variant="outlined" className={classes.formControl} style={{ marginTop: '50px', width: '100%' }}>
+//             <InputLabel id="dietary-restrictions-label">Dietary Restrictions</InputLabel>
+//             <Select
+//               labelId="dietary-restrictions-label"
+//               id="dietary-restrictions"
+//               multiple
+//               value={selectedRestrictions}
+//               onChange={handleDietaryRestrictionChange}
+//               label="Dietary Restrictions"
+//               renderValue={(selected) => selected.join(', ')}
+//             >
+//               <MenuItem value="lactose">Lactose</MenuItem>
+//               <MenuItem value="gluten-free">Gluten-free</MenuItem>
+//               <MenuItem value="vegan">Vegan</MenuItem>
+//               <MenuItem value="vegetarian">Vegetarian</MenuItem>
+//               <MenuItem value="nut allergy">Nut Allergy</MenuItem>
+//             </Select>
+//           </FormControl>
+//           <Button variant="contained" color="primary" onClick={saveChanges} className={classes.saveButton} style={{ marginTop: '20px' }}>
+//             Save Changes
+//           </Button>
+//         </div>
+//       ) : (
+//         <Typography variant="body1">Loading...</Typography>
+//       )}
+//       {error && <Typography variant="body1">{error}</Typography>}
+//     </Container>
+//   );
+// };
+
+// export default ProfilePage;

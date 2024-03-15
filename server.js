@@ -201,3 +201,26 @@ app.post("/api/saveProfileChanges", (req, res) => {
     return res.json({ message: "Profile changes saved successfully" });
   });
 });
+
+app.post("/api/deleteAccount", (req, res) => {
+  const { userName, password } = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = `DELETE FROM users WHERE userName = ? AND password = ?`;
+  const data = [userName, password];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Account deleted successfully" });
+  });
+});
+
