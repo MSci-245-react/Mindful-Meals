@@ -23,7 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "react-scripts test",
     "cypress": "cypress open",
     "lint": "eslint src",
     "eject": "react-scripts eject"
@@ -80,5 +80,4 @@
     "prettier": "2.7.1",
     "react-test-renderer": "^18.2.0"
   }
-  
 }

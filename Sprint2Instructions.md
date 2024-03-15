@@ -20,7 +20,7 @@ To test this functionality, we simulate user input by typing in “Butter” int
 
 In the Recipe Finder page, each recipe has a save recipe button to save a particular recipe. There is an additional functionality that allows the user to access all their saved recipes.
 
-To test this functionality, we save a recipe from the filtered list and then check if that recipe shows up after the saved recipes button is clicked
+To test this functionality, we save a recipe from the filtered list and then check if that recipe shows up after the saved recipes button is clicked.
 
 ### Profile Page
 
