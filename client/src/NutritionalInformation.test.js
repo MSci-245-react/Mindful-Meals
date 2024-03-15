@@ -43,7 +43,6 @@ describe('NutritionalInformation', () => {
     fireEvent.change(screen.getByPlaceholderText(/search ingredients.../i), {
       target: { value: 'Butter' }
     });
-
-   
+ 
   });
 });
