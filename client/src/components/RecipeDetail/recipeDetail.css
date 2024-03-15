@@ -1,0 +1,18 @@
+.recipe-container {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 90px;
+  width: 500px;
+}
+
+.instructions-ingredient-font {
+  font-size: 11px;
+}
+
+.main-header {
+  text-align: center;
+}
+
+.headings {
+  text-align: center;
+}

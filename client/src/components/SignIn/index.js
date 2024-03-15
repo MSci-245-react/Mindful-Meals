@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 // import { Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 
 const serverURL = "";
@@ -63,6 +64,7 @@ const SignIn = () => {
               type="text"
               name="userName"
               placeholder="Username"
+              id="userName"
               value={userName}
               onChange={handleUserNameChange}
               required
@@ -72,6 +74,7 @@ const SignIn = () => {
               type="password"
               name="password"
               placeholder="Password"
+              id='Password'
               value={password}
               onChange={handlePasswordChange}
               required

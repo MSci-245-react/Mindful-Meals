@@ -2,7 +2,7 @@ import React from 'react';
 import {render, screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
-import SignUp from './src/components/SignUp';
+import SignUp from '../components/SignUp';
 
 // This jest tests if all the relevant textboxes are there
 describe('SignUp', ()=> {

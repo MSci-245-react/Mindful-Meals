@@ -1,13 +1,23 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './recipeFinder.css';
 
-const serverURL = ' ';
+const serverURL = ''; 
 
 const RecipeFinder = () => {
   const [ingredientInput, setIngredientInput] = useState('');
   const [ingredientsArray, setIngredientsArray] = useState([]);
   const [recipes, setRecipes] = useState([]);
+  const [savedRecipes, setSavedRecipes] = useState([]);
+  const [showSavedRecipes, setShowSavedRecipes] = useState(false);
   const [dietaryRestrictionsArray, setDietaryRestrictionsArray] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
+  const lastRowIndex = currentPage * itemsPerPage;
+  const firstRowIndex = lastRowIndex - itemsPerPage;
+  const currentRecipes = recipes.slice(firstRowIndex, lastRowIndex);
+  const totalPages = Math.ceil(recipes.length / itemsPerPage);
 
   const getRecipes = () => {
     callApiGetRecipes().then(res => {
@@ -55,7 +65,7 @@ const RecipeFinder = () => {
         );
 
       // Check for dietary restrictions
-      const recipeDietaryRestrictionsLower = recipe.KeyWords.toLowerCase();
+      const recipeDietaryRestrictionsLower = recipe.Keywords.toLowerCase();
       const dietaryRestrictionsMatch =
         !Array.isArray(dietaryRestrictionsArray) ||
         dietaryRestrictionsArray.length === 0 ||
@@ -83,29 +93,49 @@ const RecipeFinder = () => {
     });
   };
 
-  // Corrected the function name based on the provided context
-  const handleIngredientChange = e => {
+
+  const handleSaveRecipe = (recipe) => {
+    const isAlreadySaved = savedRecipes.some(savedRecipe => savedRecipe.RecipeId === recipe.RecipeId);
+    if (!isAlreadySaved) {
+      setSavedRecipes([...savedRecipes, recipe]);
+    }
+  };
+
+  const handleToggleSavedRecipes = () => {
+    setShowSavedRecipes(!showSavedRecipes);
+  };
+
+  const handleIngredientChange = (e) => {
     setIngredientInput(e.target.value);
   };
 
-  // Function to add the ingredientInput to the ingredients array
   const addIngredient = () => {
-    if (ingredientInput.trim()) {
-      setIngredientsArray(prevIngredients => [
-        ...prevIngredients,
-        ingredientInput.trim(),
-      ]);
-      setIngredientInput(''); // Clear the input after adding
+    if (ingredientInput.trim() && !ingredientsArray.includes(ingredientInput)) {
+      setIngredientsArray(prev => [...prev, ingredientInput]);
+      setIngredientInput('');
     }
+  };
+
+  const clearIngredients = () => {
+    setIngredientsArray([]);
+    setIngredientInput('');
+  };
+
+  const clearRecipes = () => {
+    setRecipes([]);
   };
 
   const clearSearch = () => {
     setRecipes([]);
   };
 
-  const clearIngredients = () => {
-    setIngredientsArray([]);
-    setIngredientInput('');
+
+  const goToNextPage = () => {
+    setCurrentPage(current => Math.min(current + 1, totalPages));
+  };
+
+  const goToPreviousPage = () => {
+    setCurrentPage(current => Math.max(current - 1, 1));
   };
 
   return (
@@ -161,27 +191,63 @@ const RecipeFinder = () => {
       <div className="recipe-buttons">
         <button onClick={getRecipes}>Search Recipes</button>
         <button onClick={clearSearch}>Clear Recipes</button>
+        <button onClick={handleToggleSavedRecipes}>{showSavedRecipes ? 'Hide Saved' : 'Show Saved'} Recipes</button>
       </div>
-      {recipes.length > 0 && (
-        <div className="recipes-grid">
-          {recipes.map(recipe => (
-            <div key={recipe.id} className="recipe-card">
-              <div className="recipe-title">{recipe.Name}</div>
-              <div>Recipe ID: {recipe.RecipeId}</div>
-              <div>
-                Ingredients:{' '}
-                {
-                  recipe.RecipeIngredientParts.replace('c(', '') // Remove 'c('
-                    .replace(')', '') // Remove ')'
-                    .replaceAll('"', '') // Remove all '"'
-                }
-              </div>
+
+      {showSavedRecipes && (
+        <div>
+          <h3>Saved Recipes:</h3>
+          {savedRecipes.map((recipe, index) => (
+            <div key={index}>
+              {recipe.Name} {/* Adjust based on your recipe object */}
+              <Link to={`/recipe/${recipe.RecipeId}`}>View</Link>
             </div>
           ))}
         </div>
       )}
+       
+       {recipes.length > 0 && (
+  <>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Ingredients</th>
+          <th>Actions</th> {/* Add this header */}
+        </tr>
+      </thead>
+      <tbody>
+        {currentRecipes.map((recipe, index) => (
+          <tr key={index}>
+            <td>
+              <Link to={`/recipe/${recipe.RecipeId}`}>{recipe.Name}</Link>
+            </td>
+            <td>{recipe.RecipeIngredientParts}</td>
+            <td>
+              {/* Add the Save Recipe button */}
+              <button onClick={() => handleSaveRecipe(recipe)}>
+                Save Recipe
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+          <div className="pagination">
+            <button onClick={goToPreviousPage} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button onClick={goToNextPage} disabled={currentPage >= totalPages}>
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
-};
 
+              }
 export default RecipeFinder;
