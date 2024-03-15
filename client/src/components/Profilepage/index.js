@@ -26,6 +26,7 @@ const ProfilePage = (props) => {
   const [dietaryRestrictions, setDietaryRestrictions] = useState('');
   const [selectedRestrictions, setSelectedRestrictions] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,8 +76,10 @@ const ProfilePage = (props) => {
         });
 
         if (response.ok) {
-            window.location.href = '/HomePage';
-        } else {
+            setSuccessMessage('Account deleted successfully.');
+            setTimeout(() => {
+              window.location.href = '/SignUp';
+            }, 3000);
             const errorData = await response.json();
             setError(errorData.error || 'Failed to delete account');
           }
@@ -125,6 +128,8 @@ const ProfilePage = (props) => {
       if (!response.ok) {
         const errorData = await response.json();
         setError(errorData.error || 'Failed to save changes');
+      } else {
+        setSuccessMessage('Changes saved successfull')
       }
     } catch (error) {
       setError('An error occurred while saving changes');
@@ -214,63 +219,3 @@ const ProfilePage = (props) => {
 };
 
 export default ProfilePage;
-
-//   return (
-//     <Container maxWidth="md" className={classes.profileContainer}>
-//       <img src={defaultProfilePic} alt="Profile" className={classes.profilePic} style={{ position: 'absolute', top: '60px', right: '80px', width: '300px', height: '300px' }}/>
-//       <Typography variant="h4" gutterBottom></Typography>
-//       <Typography variant="h4" gutterBottom>
-//         Profile Page
-//       </Typography>
-//       {userData ? (
-//         <div>
-//           <Typography variant="h5" className={classes.greeting} style={{ marginTop: '50px' }}>
-//             Hi! {userData.firstName} {userData.lastName}
-//           </Typography>
-//           <Typography variant="body1" style={{ marginTop: '50px' }}>Email: {userData.email}</Typography>
-//           <Typography variant="body1" >Password: *********</Typography>
-//           <Typography variant="h6" className={classes.bioHeading} style={{ marginTop: '50px' }}>
-//             Bio
-//           </Typography>
-//           <TextField
-//             label="Bio"
-//             variant="outlined"
-//             className={classes.formControl}
-//             fullWidth
-//             multiline
-//             value={bio}
-//             onChange={handleBioChange}
-//             inputProps={{ maxLength: 200 }}
-//             style={{ maxWidth: '500px' }}
-//           />
-//           <FormControl variant="outlined" className={classes.formControl} style={{ marginTop: '50px', width: '100%' }}>
-//             <InputLabel id="dietary-restrictions-label">Dietary Restrictions</InputLabel>
-//             <Select
-//               labelId="dietary-restrictions-label"
-//               id="dietary-restrictions"
-//               multiple
-//               value={selectedRestrictions}
-//               onChange={handleDietaryRestrictionChange}
-//               label="Dietary Restrictions"
-//               renderValue={(selected) => selected.join(', ')}
-//             >
-//               <MenuItem value="lactose">Lactose</MenuItem>
-//               <MenuItem value="gluten-free">Gluten-free</MenuItem>
-//               <MenuItem value="vegan">Vegan</MenuItem>
-//               <MenuItem value="vegetarian">Vegetarian</MenuItem>
-//               <MenuItem value="nut allergy">Nut Allergy</MenuItem>
-//             </Select>
-//           </FormControl>
-//           <Button variant="contained" color="primary" onClick={saveChanges} className={classes.saveButton} style={{ marginTop: '20px' }}>
-//             Save Changes
-//           </Button>
-//         </div>
-//       ) : (
-//         <Typography variant="body1">Loading...</Typography>
-//       )}
-//       {error && <Typography variant="body1">{error}</Typography>}
-//     </Container>
-//   );
-// };
-
-// export default ProfilePage;
