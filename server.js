@@ -120,6 +120,8 @@ app.post("/api/profilePage", (req, res) => {
       lastName: userData.lastName,
       email: userData.email,
       password: userData.password,
+      bio: userData.bio || '',
+      dietaryRestrictions: userData.dietaryRestrictions || {},
     });
   });
 });
@@ -177,3 +179,48 @@ app.post("/api/getNutritionalInfo", (req, res) => {
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+app.post("/api/saveProfileChanges", (req, res) => {
+  const { userName, password, bio, dietaryRestrictions } = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = `UPDATE users SET bio = ?, dietaryRestrictions = ? WHERE userName = ? AND password = ?`;
+  const data = [bio, JSON.stringify(dietaryRestrictions), userName, password];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Profile changes saved successfully" });
+  });
+});
+
+app.post("/api/deleteAccount", (req, res) => {
+  const { userName, password } = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = `DELETE FROM users WHERE userName = ? AND password = ?`;
+  const data = [userName, password];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Account deleted successfully" });
+  });
+});
+
