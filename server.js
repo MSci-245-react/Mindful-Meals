@@ -177,3 +177,25 @@ app.post("/api/getNutritionalInfo", (req, res) => {
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+app.post("/api/saveProfileChanges", (req, res) => {
+  const { userName, password, bio, dietaryRestrictions } = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = `UPDATE users SET bio = ?, dietaryRestrictions = ? WHERE userName = ? AND password = ?`;
+  const data = [bio, JSON.stringify(dietaryRestrictions), userName, password];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Profile changes saved successfully" });
+  });
+});
