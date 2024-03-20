@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
+import ReviewRating from './reivewRating';
 import './recipeDetail.css';
 
-const serverURL = ''; // Make sure to set your actual server URL here
+const serverURL = '';
 
 const RecipeDetail = () => {
   let {RecipeId} = useParams();
-  const [currentRecipe, setCurrentRecipe] = useState(null); // Only storing the current recipe now
+  const [currentRecipe, setCurrentRecipe] = useState(null);
+  const [reviewTitle, setreviewTitle] = useState('');
+  const [reviewBody, setreviewBody] = useState('');
+  const [rating, setRating] = React.useState('');
 
   useEffect(() => {
     const callApiGetRecipes = async () => {
@@ -24,7 +28,7 @@ const RecipeDetail = () => {
         const body = await response.json();
         console.log('Fetched recipes:', body);
         const parsed = JSON.parse(body.express);
-        findRecipe(parsed, RecipeId); // Call findRecipe with the parsed data
+        findRecipe(parsed, RecipeId);
       } catch (error) {
         console.error('Fetching error:', error);
       }
@@ -63,6 +67,18 @@ const RecipeDetail = () => {
       .map(item => item.trim().replace(/"/g, ''));
   }
 
+  const handleReviewTitleChange = e => {
+    setreviewTitle(e.target.value);
+  };
+
+  const handleReviewBodyChange = e => {
+    setreviewBody(e.target.value);
+  };
+
+  const handleRatingChange = e => {
+    setRating(e.target.value);
+  };
+
   return (
     <div className="recipe-container">
       {currentRecipe ? (
@@ -87,6 +103,26 @@ const RecipeDetail = () => {
                   <li key={index}>{instr}</li>
                 ))}
               </ol>
+            </div>
+            <div className="review">
+              <h3 className="headings">Write a Review</h3>
+              <input
+                type="text"
+                id="text-input"
+                placeholder="Enter Review Title"
+                value={reviewTitle}
+                onChange={handleReviewTitleChange}
+              />
+              <input
+                type="text"
+                id="text-input"
+                placeholder="Enter Review Body"
+                className="review-body"
+                value={reviewBody}
+                onChange={handleReviewBodyChange}
+              />
+              <ReviewRating onChange={handleRatingChange} rating={rating} />
+              <button className="submit-button">Submit Review</button>{' '}
             </div>
           </div>
         </>
