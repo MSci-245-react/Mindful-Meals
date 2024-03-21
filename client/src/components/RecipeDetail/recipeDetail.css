@@ -16,3 +16,13 @@
 .headings {
   text-align: center;
 }
+
+.review-body {
+  width: 100%;
+}
+
+.submit-button {
+  width: 400px; /* Example width; adjust as needed */
+  align-items: center;
+  padding: 5px;
+}
