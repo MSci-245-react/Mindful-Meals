@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
-import RecipeFinder from './src/components/RecipeFinder/index.js';
+import RecipeFinder from '../components/RecipeFinder/index.js';
 
 // This tests if "Added Ingredients" heading exists in the recipe finder page
 describe('RecipeFinder Component', () => {
