@@ -54,3 +54,23 @@ th {
 .search-button:hover {
   background-color: #45a049;
 }
+
+/* Pagination button and spacing adjustments */
+.pagination button {
+  padding: 10px 20px; /* Adjusted button size */
+  margin: 0 5px; /* Adjusted spacing between buttons */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #45a049;
+}
+
+.pagination span {
+  margin: 0 10px; /* Adjusted spacing around page number text */
+  font-size: 16px; /* Optional: Adjust the font size of the page numbers */
+}
