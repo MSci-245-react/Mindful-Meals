@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import NutritionalInformation from './components/NutritionalInformation';
+import NutritionalInformation from '../components/NutritionalInformation';
 
 // Mock the server response
 const mockData = [
@@ -43,7 +43,6 @@ describe('NutritionalInformation', () => {
     fireEvent.change(screen.getByPlaceholderText(/search ingredients.../i), {
       target: { value: 'Butter' }
     });
-
-   
+ 
   });
 });
