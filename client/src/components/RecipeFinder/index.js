@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './recipeFinder.css';
 
-const serverURL = ''; 
+const serverURL = '';
 
 const RecipeFinder = () => {
   const [ingredientInput, setIngredientInput] = useState('');
   const [ingredientsArray, setIngredientsArray] = useState([]);
   const [recipes, setRecipes] = useState([]);
-  const [savedRecipes, setSavedRecipes] = useState([]);
+  const [savedRecipes, setSavedRecipes] = useState(() => {
+    const localData = localStorage.getItem('savedRecipes');
+    return localData ? JSON.parse(localData) : [];
+  });
   const [showSavedRecipes, setShowSavedRecipes] = useState(false);
   const [dietaryRestrictionsArray, setDietaryRestrictionsArray] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+
+
+  // Save savedRecipes to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+  }, [savedRecipes]);
 
   const lastRowIndex = currentPage * itemsPerPage;
   const firstRowIndex = lastRowIndex - itemsPerPage;
@@ -97,9 +106,18 @@ const RecipeFinder = () => {
   const handleSaveRecipe = (recipe) => {
     const isAlreadySaved = savedRecipes.some(savedRecipe => savedRecipe.RecipeId === recipe.RecipeId);
     if (!isAlreadySaved) {
-      setSavedRecipes([...savedRecipes, recipe]);
+      const newSavedRecipes = [...savedRecipes, recipe];
+      setSavedRecipes(newSavedRecipes);
+      // Additionally save to localStorage
+      localStorage.setItem('savedRecipes', JSON.stringify(newSavedRecipes));
     }
   };
+
+  const handleRemoveRecipe = (recipeId) => {
+    const updatedSavedRecipes = savedRecipes.filter(recipe => recipe.RecipeId !== recipeId);
+    setSavedRecipes(updatedSavedRecipes);
+    localStorage.setItem('savedRecipes', JSON.stringify(updatedSavedRecipes));
+  }; 
 
   const handleToggleSavedRecipes = () => {
     setShowSavedRecipes(!showSavedRecipes);
@@ -199,8 +217,9 @@ const RecipeFinder = () => {
           <h3>Saved Recipes:</h3>
           {savedRecipes.map((recipe, index) => (
             <div key={index}>
-              {recipe.Name} {/* Adjust based on your recipe object */}
+              {recipe.Name}
               <Link to={`/recipe/${recipe.RecipeId}`}>View</Link>
+              <button onClick={() => handleRemoveRecipe(recipe.RecipeId)}>Remove</button>
             </div>
           ))}
         </div>

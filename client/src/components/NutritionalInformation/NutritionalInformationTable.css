@@ -74,3 +74,21 @@ th {
   margin: 0 10px; /* Adjusted spacing around page number text */
   font-size: 16px; /* Optional: Adjust the font size of the page numbers */
 }
+
+.add-to-cart-button {
+  margin-left: 20px; /* Adds space on the left of the Add to Cart button */
+}
+
+.add-to-cart-btn {
+  background-color: #4CAF50; /* Green background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  border-radius: 5px; /* Rounded corners */
+  margin-top: 10px; /* Some margin at the top */
+}
+
+.add-to-cart-btn:hover {
+  background-color: #45a049; /* Darker green background on hover */
+}

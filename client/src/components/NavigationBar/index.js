@@ -2,8 +2,14 @@ import React from 'react';
 import {Link as RouterLink} from 'react-router-dom';
 import Toolbar from '@mui/material/Toolbar';
 import Link from '@mui/material/Link';
+import { useContext } from 'react'; 
+import { CartContext } from '../Cart';
 
 const NavigationBar = () => {
+  const { cartItems } = useContext(CartContext);
+  const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+
+
   return (
     <div>
       <style>
@@ -95,7 +101,12 @@ const NavigationBar = () => {
             <li>
               <Link component={RouterLink} to="/RecipeFinder">
                 Find Recipes
-              </Link>
+                </Link>
+            </li>
+            <li>
+            <Link component={RouterLink} to="/cart" style={{ textDecoration: 'none' }}>
+                Grocery Cart ({cartItemCount})
+              </Link> 
             </li>
           </ul>
         </div>

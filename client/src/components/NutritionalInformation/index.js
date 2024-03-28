@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react'; 
 import './NutritionalInformationTable.css';
-
-const serverURL = ''; 
+import { CartContext } from '../Cart'; 
+const serverURL = '';  
 
 const NutritionalInformationTable = () => {
   const [nutritionalData, setNutritionalData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Display 10 rows per page
+  const itemsPerPage = 10; // Display 10 rows per page 
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     getNutritionalData();
@@ -41,20 +42,33 @@ const NutritionalInformationTable = () => {
     item.Shrt_Desc.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleAddToCart = (item) => {
+    addToCart({
+      ...item,
+      id: item.NDB_No || item.Shrt_Desc + Date.now() // assuming NDB_No or Shrt_Desc is unique
+    });
+  };  
+
   // Calculate the rows to display based on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredNutritionalData.slice(indexOfFirstItem, indexOfLastItem);
+  
 
   const totalPages = Math.ceil(filteredNutritionalData.length / itemsPerPage);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to the first page when search term changes
+    setCurrentPage(1);
   };
+ 
+  const currentItems = nutritionalData
+    .filter(item => item.Shrt_Desc.toLowerCase().includes(searchTerm.toLowerCase()))
+    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+
 
   // Function to change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -87,18 +101,21 @@ const NutritionalInformationTable = () => {
         <tbody>
           {currentItems.map((item, index) => (
             <tr key={index}>
-              <td className="name-column">{item.Shrt_Desc}</td>
-              <td>{item['Protein_(g)']}</td>
-              <td>{item['Carbohydrt_(g)']}</td>
-              <td>{item['Water_(g)']}</td>
-              <td>{item['Energ_Kcal']}</td>
-              <td>{item['Lipid_Tot_(g)']}</td>
-              <td>{item['Ash_(g)']}</td>
-              <td>{item['Fiber_TD_(g)']}</td>
-              <td>{item['Sugar_Tot_(g)']}</td>
-              <td>{item['Calcium_(mg)']}</td>
-              <td>{item['Iron_(mg)']}</td>
-              <td>{item['Vit_C_(mg)']}</td>
+      <td className="name-column">{item.Shrt_Desc}</td>
+      <td>{item['Protein_(g)']}</td>
+      <td>{item['Carbohydrt_(g)']}</td>
+      <td>{item['Water_(g)']}</td>
+      <td>{item['Energ_Kcal']}</td>
+      <td>{item['Lipid_Tot_(g)']}</td>
+      <td>{item['Ash_(g)']}</td>
+      <td>{item['Fiber_TD_(g)']}</td>
+      <td>{item['Sugar_Tot_(g)']}</td>
+      <td>{item['Calcium_(mg)']}</td>
+      <td>{item['Iron_(mg)']}</td>
+      <td>{item['Vit_C_(mg)']}</td>
+      <td>
+      <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
+              </td>
             </tr>
           ))}
         </tbody>
