@@ -1,14 +1,13 @@
-import React from 'react';
-import {Link as RouterLink} from 'react-router-dom';
-import Toolbar from '@mui/material/Toolbar';
+import React, { useState, useContext } from 'react'; // Added useState to the import
+import { Link as RouterLink } from 'react-router-dom';
 import Link from '@mui/material/Link';
-import { useContext } from 'react'; 
-import { CartContext } from '../Cart';
+import { CartContext } from '../Cart';  
+import CartDropdown from '../Cart/CartDropdown'; 
 
 const NavigationBar = () => {
   const { cartItems } = useContext(CartContext);
   const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
-
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
     <div>
@@ -17,7 +16,7 @@ const NavigationBar = () => {
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
           *{
             margin: 0;
-            padding: 0;
+            padding: 0;  
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
           }
@@ -76,43 +75,43 @@ const NavigationBar = () => {
         `}
       </style>
       <nav>
-        <div className="menu">
+      <div className="menu">
           <div className="logo">
-            <Link component={RouterLink} to="/">
+            <Link component={RouterLink} to="/" style={{ textDecoration: 'none', color: '#fff' }}>
               Mindful Meals
             </Link>
           </div>
           <ul>
             <li>
-              <Link component={RouterLink} to="/SignUp">
+              <Link component={RouterLink} to="/SignUp" style={{ textDecoration: 'none', color: '#fff' }}>
                 Sign Up
               </Link>
             </li>
             <li>
-              <Link component={RouterLink} to="/SignIn">
+              <Link component={RouterLink} to="/SignIn" style={{ textDecoration: 'none', color: '#fff' }}>
                 Sign In
               </Link>
             </li>
             <li>
-              <Link component={RouterLink} to="/NutritionalInformation">
+              <Link component={RouterLink} to="/NutritionalInformation" style={{ textDecoration: 'none', color: '#fff' }}>
                 Nutritional Info
               </Link>
             </li>
             <li>
-              <Link component={RouterLink} to="/RecipeFinder">
+              <Link component={RouterLink} to="/RecipeFinder" style={{ textDecoration: 'none', color: '#fff' }}>
                 Find Recipes
-                </Link>
+              </Link>
             </li>
-            <li>
-            <Link component={RouterLink} to="/cart" style={{ textDecoration: 'none' }}>
-                Grocery Cart ({cartItemCount})
-              </Link> 
+            <li style={{ cursor: 'pointer', color: '#fff' }} onClick={() => setIsCartOpen(!isCartOpen)}>
+              Grocery Cart ({cartItemCount})
             </li>
           </ul>
+          {isCartOpen && <CartDropdown />}
         </div>
       </nav>
     </div>
   );
 };
+
 
 export default NavigationBar;
