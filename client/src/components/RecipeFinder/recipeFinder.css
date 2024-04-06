@@ -101,3 +101,32 @@ td {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
 }
 
+.allergens-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between pills */
+  justify-content: center; /* Center pills */
+  padding: 5px 0;
+}
+
+.allergen-pill {
+  padding: 5px 10px;
+  border: 1px solid #28a745; /* Green border */
+  border-radius: 15px; /* Rounded corners for pill shape */
+  background-color: #dff0d8; /* Light green background */
+  color: #155724; /* Dark green text */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.allergen-remove-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #155724; /* Same as text color for visual consistency */
+}
+
+.allergen-remove-btn:hover {
+  color: #28a745; /* A brighter green on hover for better user feedback */
+}

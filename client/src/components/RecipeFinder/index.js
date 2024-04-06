@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './recipeFinder.css';
 
-const serverURL = '';
+const serverURL = ''; // Make sure this points to your actual server URL
 
 const RecipeFinder = () => {
   const [ingredientInput, setIngredientInput] = useState('');
   const [ingredientsArray, setIngredientsArray] = useState([]);
+  const [allergensArray, setAllergensArray] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [savedRecipes, setSavedRecipes] = useState(() => {
     const localData = localStorage.getItem('savedRecipes');
@@ -18,10 +19,20 @@ const RecipeFinder = () => {
   const itemsPerPage = 4;
 
 
-  // Save savedRecipes to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
-  }, [savedRecipes]);
+    try {
+      const savedAllergens = localStorage.getItem('allergens');
+      if (savedAllergens) {
+        setAllergensArray(JSON.parse(savedAllergens));
+      }
+    } catch (error) {
+      console.error('Failed to parse allergens from localStorage:', error);
+    }
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('allergens', JSON.stringify(allergensArray));
+  }, [allergensArray]);
 
   const lastRowIndex = currentPage * itemsPerPage;
   const firstRowIndex = lastRowIndex - itemsPerPage;
@@ -29,42 +40,50 @@ const RecipeFinder = () => {
   const totalPages = Math.ceil(recipes.length / itemsPerPage);
 
   const getRecipes = () => {
-    callApiGetRecipes().then(res => {
-      console.log('callApiFindRecipes returned: ', res);
-      const parsed = JSON.parse(res.express);
-      console.log('callApiFindRecipes parsed: ', parsed);
-      // filter the parsed recipes based on all ingredients
-      const filtered = filterRecipes(
-        parsed,
-        ingredientsArray,
-        dietaryRestrictionsArray,
-      );
+    callApiGetRecipes().then(data => { // assuming that the server sends back the proper JSON
+      // No need to parse as callApiGetRecipes already parses the response
+      const filtered = filterRecipes(data, ingredientsArray, dietaryRestrictionsArray, allergensArray);
       setRecipes(filtered);
+    }).catch(error => {
+      console.error('Error fetching recipes:', error);
     });
   };
 
   const callApiGetRecipes = async () => {
     const url = `${serverURL}/api/getRecipes`;
-    console.log(url);
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) throw Error(`HTTP error! status: ${response.status}`);
-    const body = await response.json();
-    console.log('User settings: ', body);
-    return body;
+    const body = {
+      ingredientsArray,
+      dietaryRestrictionsArray,
+      allergensArray
+    };
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      // Assuming the server sends back a JSON object
+      return await response.json();
+    } catch (error) {
+      console.error("There was an error fetching recipes:", error);
+      throw error; // Rethrow the error to be caught by the caller of callApiGetRecipes
+    }
   };
 
   const filterRecipes = (
     recipes,
     ingredientsArray,
     dietaryRestrictionsArray,
+    allergensArray,
   ) => {
     return recipes.filter(recipe => {
-      // Check for ingredients
       const recipeIngredientsLower = recipe.RecipeIngredientParts.toLowerCase();
       const ingredientsMatch =
         !Array.isArray(ingredientsArray) ||
@@ -73,19 +92,21 @@ const RecipeFinder = () => {
           recipeIngredientsLower.includes(ingredient.toLowerCase()),
         );
 
-      // Check for dietary restrictions
-      const recipeDietaryRestrictionsLower = recipe.Keywords.toLowerCase();
-      const dietaryRestrictionsMatch =
-        !Array.isArray(dietaryRestrictionsArray) ||
-        dietaryRestrictionsArray.length === 0 ||
-        dietaryRestrictionsArray.every(restriction =>
-          recipeDietaryRestrictionsLower.includes(restriction.toLowerCase()),
+        const recipeDietaryRestrictionsLower = recipe.Keywords.toLowerCase();
+        const dietaryRestrictionsMatch =
+          !Array.isArray(dietaryRestrictionsArray) ||
+          dietaryRestrictionsArray.length === 0 ||
+          dietaryRestrictionsArray.every(restriction =>
+            recipeDietaryRestrictionsLower.includes(restriction.toLowerCase()),
+          );
+  
+        const allergensMatch = !allergensArray.some(allergen =>
+          recipeIngredientsLower.includes(allergen.toLowerCase()),
         );
-
-      // Return true if both checks pass
-      return ingredientsMatch && dietaryRestrictionsMatch;
-    });
-  };
+  
+        return ingredientsMatch && dietaryRestrictionsMatch && allergensMatch;
+      });
+    };
 
   const handleDietaryChange = (event, restriction) => {
     const isChecked = event.target.checked;
@@ -118,6 +139,17 @@ const RecipeFinder = () => {
     setSavedRecipes(updatedSavedRecipes);
     localStorage.setItem('savedRecipes', JSON.stringify(updatedSavedRecipes));
   }; 
+
+  const addAllergen = () => {
+    if (ingredientInput.trim() && !allergensArray.includes(ingredientInput)) {
+      setAllergensArray(prev => [...prev, ingredientInput]);
+      setIngredientInput('');
+    }
+  };
+
+  const handleRemoveAllergen = (index) => {
+    setAllergensArray((prevAllergens) => prevAllergens.filter((_, i) => i !== index));
+  };
 
   const handleToggleSavedRecipes = () => {
     setShowSavedRecipes(!showSavedRecipes);
@@ -169,6 +201,7 @@ const RecipeFinder = () => {
         />
         <button onClick={addIngredient}>Add</button>{' '}
         <button onClick={clearIngredients}>Clear</button>
+        <button onClick={addAllergen}>Add as Allergen</button> {/* New Allergen Button */}
       </div>
       {/* Display added ingredients */}
       <div className="subheading-text">Added Ingredients</div>
@@ -181,6 +214,21 @@ const RecipeFinder = () => {
       </div>
       <div className="subheading-text">Dietary Restrictions</div>
       <div className="dietary-restrictions">
+        {/* ... (Dietary restrictions checkboxes) */}
+
+         {/* Section to display added allergens */}
+         <div className="subheading-text">Allergens</div>
+<div className="allergens-list">
+  {allergensArray.map((allergen, index) => (
+    <div key={index} className="allergen-pill">
+      {allergen}
+      <button className="allergen-remove-btn" onClick={() => handleRemoveAllergen(index)}>
+        &times; {/* This creates a 'times' symbol (×) to serve as a remove button */}
+      </button>
+    </div>
+  ))}
+</div>
+
         <label>
           <input
             type="checkbox"
