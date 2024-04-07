@@ -19,7 +19,7 @@ h1 {
 .form-group {
   margin-bottom: 20px;
   display: flex;
-  flex-direction: column; /* Align items vertically */
+  flex-direction: column; 
   align-items: center;
 }
 
@@ -51,3 +51,4 @@ input[type='password'] {
 .error {
   color: red;
 }
+

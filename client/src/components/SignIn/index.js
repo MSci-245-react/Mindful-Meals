@@ -1,92 +1,76 @@
 import React, { useState } from 'react';
-// import { Redirect } from 'react-router-dom';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { withFirebase } from '../Firebase';
+import { useNavigate } from 'react-router-dom';
 
 
-const serverURL = "";
+const SignIn = ({ firebase }) => {
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-const SignIn = () => {
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [error, setErrors] = useState('');
+  const handleUserNameChange = (event) => {
+    setUserName(event.target.value);
+  }
 
-    const handleUserNameChange = (event) => {
-        setUserName(event.target.value);
-    }
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  }
 
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    }
+  const handleRedirect = () => {
+    window.location.href = '/Profilepage';
+  };
 
-    const handleRedirect = () => {
-      window.location.href='/Profilepage';
-    };
-  
+  const handleSubmit = event => {
+    event.preventDefault();
+    firebase
+      .doSignInWithEmailAndPassword(email, password)
+      .then(() => {
+        // Redirect or state reset logic here
+        navigate('/');
+      })
+      .catch(error => {
+        setError(error);
+      });
+  };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        
-        try {
-            const response = await fetch('/api/signIn', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ userName, password }),
-            });
-      
-            if (response.ok) {
-              setLoggedIn(true);
+  const onChange = event => {
+    const { name, value } = event.target;
+    if (name === 'email') setEmail(value);
+    else if (name === 'password') setPassword(value);
+  };
 
-              localStorage.setItem('userName', userName);
-              localStorage.setItem('password', password);
-              
-              setTimeout(() => {
-                handleRedirect();
-              }, 3000);
+  return (
+    <div className='container'>
+      <h1>Sign In</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={onChange}
+          required
+        />
+        <br />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={password}
+          onChange={onChange}
+          required
+        />
+        <br />
+        <button type="submit">Sign In</button>
+      </form>
+      {error && <p>{error.message}</p>}
+      {loggedIn && <p>Sign In Successful!</p>}
+    </div>
+  );
 
-            } else {
-              const errorData = await response.json();
-              setErrors(errorData.error || 'Sign-in failed');
-            }
-          } catch (error) {
-            setErrors('An error occurred while signing in');
-            console.error('Error signing in:', error);
-          }
-    };
-
-    return (
-        <div className='container'>
-          <h1>Sign In</h1>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="userName"
-              placeholder="Username"
-              id="userName"
-              value={userName}
-              onChange={handleUserNameChange}
-              required
-            />
-            <br />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              id='Password'
-              value={password}
-              onChange={handlePasswordChange}
-              required
-            />
-            <br />
-            <button type="submit">Sign In</button>
-          </form>
-          {error && <p>{error}</p>}
-          {loggedIn && 
-          <p>Sign In Successful!</p>}
-        </div>
-      );
 }
 
-export default SignIn;
+export default withFirebase(SignIn);
