@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import backgroundImage from './background.jpg';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -21,6 +21,25 @@ const Landing = () => {
     color: '#fff',
     padding: '20px',
     borderRadius: '20px',
+    textAlign: 'center',
+  };
+
+  const buttonStyle = {
+    margin: '10px',
+  };
+
+  const handleSignIn = () => {
+    navigate('/SignIn');
+  };
+
+  const handleSignUp = () => {
+    navigate('/SignUp');
+  };
+
+  const buttonContainerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '20px',
   };
 
   return (
@@ -30,13 +49,17 @@ const Landing = () => {
           variant="h3"
           color="inherit"
           noWrap
-          sx={{fontFamily: 'Poppins', fontWeight: 'bold'}}
+          sx={{ fontFamily: 'Poppins', fontWeight: 'bold' }}
         >
+
           Mindful Meals
         </Typography>
+        <button style={buttonStyle} onClick={handleSignIn}>Sign In</button>
+        <button style={buttonStyle} onClick={handleSignUp}>Sign Up</button>
       </div>
-    </div>
+    </div >
   );
 };
+
 
 export default Landing;
