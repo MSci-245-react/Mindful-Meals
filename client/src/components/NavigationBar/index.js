@@ -65,6 +65,18 @@ const NavigationBar = ({ authenticated }) => {
     </li>
   ) : null;
 
+  const renderProfileLink = authenticated ? (
+    <li>
+      <Link
+        component={RouterLink}
+        to="Profile"
+        style={{ textDecoration: 'none', color: '#fff' }}
+      >
+        Profile
+      </Link>
+    </li>
+  ) : null;
+
 
   return (
     <div>
@@ -148,6 +160,7 @@ const NavigationBar = ({ authenticated }) => {
             {renderGroceriesLink}
           </ul>
           {isCartOpen && <CartDropdown />}
+          {renderProfileLink}
           {renderSignOutLink}
         </div>
       </nav >

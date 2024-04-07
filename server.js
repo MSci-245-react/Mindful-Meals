@@ -58,11 +58,41 @@ app.post("/api/signIn", (req, res) => {
   connection.end();
 });
 
-app.post("/api/profilePage", (req, res) => {
-  const { userName, password } = req.body;
+// app.post("/api/profilePage", (req, res) => {
+//   const { userName, password } = req.body;
+//   let connection = mysql.createConnection(config);
+//   const sql = `SELECT * FROM users WHERE email = ?`;
+//   const data = [email];
+
+//   connection.query(sql, data, (err, results) => {
+//     connection.end();
+
+//     if (err) {
+//       console.error("Error executing query:", err);
+//       return res.status(500).json({ error: "Internal Server Error" });
+//     }
+
+//     if (results.length === 0) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     const userData = results[0];
+//     return res.json({
+//       firstName: userData.firstName,
+//       lastName: userData.lastName,
+//       email: userData.email,
+//       password: userData.password,
+//       bio: userData.bio || '',
+//       dietaryRestrictions: userData.dietaryRestrictions || {},
+//     });
+//   });
+// });
+
+app.get("/api/profilePage", (req, res) => {
+  const { email } = req.query;
   let connection = mysql.createConnection(config);
-  const sql = `SELECT * FROM users WHERE userName = ? AND password = ?`;
-  const data = [userName, password];
+  const sql = `SELECT * FROM users WHERE email = ?`;
+  const data = [email];
 
   connection.query(sql, data, (err, results) => {
     connection.end();
@@ -81,12 +111,13 @@ app.post("/api/profilePage", (req, res) => {
       firstName: userData.firstName,
       lastName: userData.lastName,
       email: userData.email,
-      password: userData.password,
+      userName: userData.userName,
       bio: userData.bio || '',
-      dietaryRestrictions: userData.dietaryRestrictions || {},
+      allergies: userData.allergies || ''
     });
   });
 });
+
 
 // API to read recipes from the database
 app.post("/api/getRecipes", (req, res) => {
@@ -170,5 +201,71 @@ app.post("/api/deleteAccount", (req, res) => {
     }
 
     return res.json({ message: "Account deleted successfully" });
+  });
+});
+
+app.post("/api/updateBio", (req, res) => {
+  const { email, bio } = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = 'UPDATE users SET bio = ? WHERE email = ?';
+  const data = [bio, email];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Bio updated successfully" });
+  });
+});
+
+app.post("/api/updateDietaryRestrictions", (req, res) => {
+  const { email, dietaryRestrictions } = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = 'UPDATE users SET dietaryRestrictions = ? WHERE email = ?';
+  const data = [dietaryRestrictions, email];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Dietary restrictions updated successfully" });
+  });
+});
+
+app.post("/api/updateAllergies", (req, res) => {
+  const { email, allergies } = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = 'UPDATE users SET allergies = ? WHERE email = ?';
+  const data = [allergies, email];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Allergies updated successfully" });
   });
 });
