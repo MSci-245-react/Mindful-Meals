@@ -120,27 +120,38 @@ app.get("/api/profilePage", (req, res) => {
 
 
 // API to read recipes from the database
-app.post("/api/getRecipes", (req, res) => {
+
+app.get("/api/getRecipes", (req, res) => {
   let connection = mysql.createConnection(config);
-  const { ingredientsArray, dietaryRestrictionsArray, allergensArray } = req.body;
+  const sql = "SELECT * FROM nutrition";
 
-  const sql = "SELECT * FROM recipes"; // Replace with your actual SQL query
-
-  connection.query(sql, (error, results) => {
-    connection.end(); // Make sure you close the connection after the query
+  connection.query(sql, (error, results, fields) => {
+    connection.end();
     if (error) {
-      console.error('Error fetching recipes:', error);
-      res.status(500).json({ error: "Internal Server Error", details: error.message });
+      console.error("Error querying the database:", error);
+      res
+        .status(500)
+        .send("Error retrieving nutritional information from the database");
     } else {
-      if (results.length === 0) {
-        // No results found, send an empty array
-        res.json([]);
-      } else {
-        // Send the results as JSON
-        res.json(results);
-      }
+      res.json(results);
     }
   });
+});
+
+// API to read recipes from the database
+app.post("/api/getRecipes", (req, res) => {
+  let connection = mysql.createConnection(config);
+
+  const sql = `SELECT * FROM recipes`;
+
+  connection.query(sql, (error, results, fields) => {
+    if (error) {
+      return console.error(error.message);
+    }
+    let string = JSON.stringify(results);
+    res.send({ express: string });
+  });
+  connection.end();
 });
 
 app.post("/api/getNutritionalInfo", (req, res) => {
