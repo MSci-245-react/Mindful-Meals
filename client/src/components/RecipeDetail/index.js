@@ -2,15 +2,50 @@ import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import ReviewRating from './reivewRating';
 import './recipeDetail.css';
+import {withFirebase} from '../Firebase';
 
 const serverURL = '';
 
-const RecipeDetail = () => {
+const RecipeDetail = ({firebase}) => {
   let {RecipeId} = useParams();
   const [currentRecipe, setCurrentRecipe] = useState(null);
   const [reviewTitle, setreviewTitle] = useState('');
   const [reviewBody, setreviewBody] = useState('');
-  const [rating, setRating] = React.useState('');
+  const [rating, setRating] = useState('');
+  const [userId, setUserId] = useState('');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const user = firebase.auth.currentUser;
+        if (user) {
+          const response = await fetch(`/api/getUserData`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email: user.email}),
+          });
+
+          if (response.ok) {
+            const userData = await response.json(); // Parse the JSON response
+            setUserId(userData.id); // Update the userId state
+            setUserName(userData.userName); // Update the userName state, ensure these property names match your DB columns
+            console.log('User Data:', userData); // Log the received user data
+          } else {
+            console.error('Failed to fetch user profile:', response.statusText);
+          }
+        } else {
+          console.error('No user signed in.');
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   useEffect(() => {
     const callApiGetRecipes = async () => {
@@ -36,6 +71,36 @@ const RecipeDetail = () => {
 
     callApiGetRecipes();
   }, [RecipeId]);
+
+  const sendReview = () => {
+    callApiAddReview().then(res => {
+      console.log('sending review');
+    });
+  };
+
+  const callApiAddReview = async () => {
+    const url = `${serverURL}/api/addReview`;
+    console.log(url);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        recipeId: RecipeId,
+        userId: userId,
+        userName: userName,
+        reviewTitle: reviewTitle,
+        reviewBody: reviewBody,
+        rating: rating,
+      }),
+    });
+    const body = await response.json();
+    console.log(body);
+    if (response.status !== 200) throw Error(body.message);
+    console.log('Review added successfully: ', body);
+    return body;
+  };
 
   const findRecipe = (recipes, recipeId) => {
     const id = Number(recipeId);
@@ -77,6 +142,10 @@ const RecipeDetail = () => {
 
   const handleRatingChange = e => {
     setRating(e.target.value);
+  };
+
+  const handleSubmit = e => {
+    sendReview();
   };
 
   return (
@@ -122,7 +191,9 @@ const RecipeDetail = () => {
                 onChange={handleReviewBodyChange}
               />
               <ReviewRating onChange={handleRatingChange} rating={rating} />
-              <button className="submit-button">Submit Review</button>{' '}
+              <button className="submit-button" onClick={handleSubmit}>
+                Submit Review
+              </button>{' '}
             </div>
           </div>
         </>
@@ -133,4 +204,4 @@ const RecipeDetail = () => {
   );
 };
 
-export default RecipeDetail;
+export default withFirebase(RecipeDetail);

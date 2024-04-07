@@ -73,7 +73,7 @@ td {
 }
 
 .recipe-buttons button {
-  width: 400px; 
+  width: 400px;
   margin: 0 auto;
   padding: 5px;
 }
@@ -102,34 +102,33 @@ td {
 }
 
 .allergens-section {
-  position: relative; 
+  position: relative;
   text-align: center;
-  margin-bottom: 20px;  
+  margin-bottom: 20px;
 }
 
 .allergens-dropdown-btn {
   padding: 10px;
-  background-color: #f9f9f9; 
-  color: #333; 
-  border: 1px solid #ccc; 
+  background-color: #f9f9f9;
+  color: #333;
+  border: 1px solid #ccc;
   cursor: pointer;
   outline: none;
-
 }
 
 .allergens-dropdown-content {
-  display: none; 
+  display: none;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   padding: 10px;
   border-radius: 5px;
-  top: 100%;  
-  margin-top: 2px; 
+  top: 100%;
+  margin-top: 2px;
 }
 
 .show-dropdown {
@@ -137,13 +136,13 @@ td {
 }
 
 .allergen-pill {
-  display: flex; 
-  align-items: center; 
-  margin: 5px 0; 
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
 }
 
 .allergen-remove-btn {
-  margin-left: 10px; 
+  margin-left: 10px;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -173,7 +172,8 @@ td {
 }
 
 /* Style for the 'View' link */
-.view-button, .remove-button {
+.view-button,
+.remove-button {
   padding: 5px 10px; /* Adjust padding to your preference */
   margin-left: 10px; /* Creates space to the left of the buttons */
   text-decoration: none; /* Removes underline from the links */
