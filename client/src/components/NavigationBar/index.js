@@ -32,6 +32,40 @@ const NavigationBar = ({ authenticated }) => {
     </li>
   ) : null;
 
+  const renderNutritionalLink = authenticated ? (
+    <li>
+      <Link
+        component={RouterLink}
+        to="/NutritionalInformation"
+        style={{ textDecoration: 'none', color: '#fff' }}
+      >
+        SignOut
+      </Link>
+    </li>
+  ) : null;
+
+  const renderReceipesLink = authenticated ? (
+    <li>
+      <Link
+        component={RouterLink}
+        to="/RecipeFinder"
+        style={{ textDecoration: 'none', color: '#fff' }}
+      >
+        SignOut
+      </Link>
+    </li>
+  ) : null;
+
+  const renderGroceriesLink = authenticated ? (
+    <li
+      style={{ cursor: 'pointer', color: '#fff' }}
+      onClick={() => setIsCartOpen(!isCartOpen)}
+    >
+      Grocery Cart ({cartItemCount})
+    </li>
+  ) : null;
+
+
   return (
     <div>
       <style>
@@ -109,41 +143,11 @@ const NavigationBar = ({ authenticated }) => {
             </Link>
           </div>
           <ul>
-            <li>
-              <Link
-                component={RouterLink}
-                to="/NutritionalInformation"
-                style={{ textDecoration: 'none', color: '#fff' }}
-              >
-                Nutritional Info
-              </Link>
-            </li>
-            <li>
-              <Link
-                component={RouterLink}
-                to="/RecipeFinder"
-                style={{ textDecoration: 'none', color: '#fff' }}
-              >
-                Find Recipes
-              </Link>
-            </li>
-            <li
-              style={{ cursor: 'pointer', color: '#fff' }}
-              onClick={() => setIsCartOpen(!isCartOpen)}
-            >
-              Grocery Cart ({cartItemCount})
-            </li>
+            {renderNutritionalLink}
+            {renderReceipesLink}
+            {renderGroceriesLink}
           </ul>
           {isCartOpen && <CartDropdown />}
-          {/* <li>
-            <Link
-              component={RouterLink}
-              to="/SignOut"
-              style={{ textDecoration: 'none', color: '#fff' }}
-            >
-              SignOut
-            </Link>
-          </li> */}
           {renderSignOutLink}
         </div>
       </nav >

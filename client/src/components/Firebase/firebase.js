@@ -25,8 +25,6 @@ class Firebase {
   constructor() {
     this.auth = getAuth(app);
   }
-
-  // *** Auth API ***
   doCreateUserWithEmailAndPassword = (email, password) =>
     createUserWithEmailAndPassword(this.auth, email, password);
 
@@ -40,7 +38,6 @@ class Firebase {
   doPasswordUpdate = password =>
     updatePassword(this.auth.currentUser, password);
 
-  // Function to get ID Token of the currently signed-in user
   doGetIdToken = () => {
     return new Promise((resolve, reject) => {
       const user = this.auth.currentUser;

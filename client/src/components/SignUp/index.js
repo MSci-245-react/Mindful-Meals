@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { withFirebase } from '../Firebase';
 import './SignUp.css';
 
 const serverURL = '';
 
-const SignUp = () => {
+const SignUp = ({ firebase }) => {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -52,6 +53,8 @@ const SignUp = () => {
   const handleRedirect = () => {
     window.location.href = '/SignIn';
   };
+
+
 
   // function to call the sign up api function
   const callApiSignUp = async reviewData => {
@@ -123,8 +126,6 @@ const SignUp = () => {
         password: password,
       };
 
-      // doCreateUserWithEmailAndPassword = (email, password)
-
       // call the API function
       callApiSignUp(reviewData)
         .then(res => {
@@ -136,7 +137,6 @@ const SignUp = () => {
           setUserName('');
           setEmail('');
           setPassword('');
-
           setTimeout(() => {
             handleRedirect();
           }, 5000);
@@ -144,6 +144,25 @@ const SignUp = () => {
         })
         .catch(error => {
           console.error('Error adding user:', error.message);
+        });
+
+      firebase
+        .doCreateUserWithEmailAndPassword(email, password)
+        .then(authUser => {
+          // User creation successful, you can handle any additional actions here
+          console.log('User created successfully:', authUser);
+          setShowConfirmation(true);
+          setErrors({});
+          setFirstName('');
+          setLastName('');
+          setUserName('');
+          setEmail('');
+          setPassword('');
+        })
+        .catch(error => {
+          // Handle Firebase authentication errors
+          console.error('Error creating user:', error);
+          setErrors({ firebase: error.message }); // Set Firebase error message
         });
     }
   };
@@ -226,4 +245,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default withFirebase(SignUp);
