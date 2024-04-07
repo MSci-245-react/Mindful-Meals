@@ -73,8 +73,8 @@ td {
 }
 
 .recipe-buttons button {
-  width: 400px; /* Example width; adjust as needed */
-  margin: 0 auto; /* Center the button in the flex container */
+  width: 400px; 
+  margin: 0 auto;
   padding: 5px;
 }
 
@@ -98,35 +98,89 @@ td {
   border: 1px solid #ccc; /* Light gray border */
   border-radius: 5px; /* Rounded corners */
   background-color: #f0f0f0; /* Light gray background */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
 }
 
-.allergens-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px; /* Space between pills */
-  justify-content: center; /* Center pills */
-  padding: 5px 0;
+.allergens-section {
+  position: relative; 
+  text-align: center;
+  margin-bottom: 20px;  
+}
+
+.allergens-dropdown-btn {
+  padding: 10px;
+  background-color: #f9f9f9; 
+  color: #333; 
+  border: 1px solid #ccc; 
+  cursor: pointer;
+  outline: none;
+
+}
+
+.allergens-dropdown-content {
+  display: none; 
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  padding: 10px;
+  border-radius: 5px;
+  top: 100%;  
+  margin-top: 2px; 
+}
+
+.show-dropdown {
+  display: block;
 }
 
 .allergen-pill {
-  padding: 5px 10px;
-  border: 1px solid #28a745; /* Green border */
-  border-radius: 15px; /* Rounded corners for pill shape */
-  background-color: #dff0d8; /* Light green background */
-  color: #155724; /* Dark green text */
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  display: flex; 
+  align-items: center; 
+  margin: 5px 0; 
 }
 
 .allergen-remove-btn {
+  margin-left: 10px; 
   background-color: transparent;
   border: none;
   cursor: pointer;
-  color: #155724; /* Same as text color for visual consistency */
+  color: #155724;
 }
 
 .allergen-remove-btn:hover {
-  color: #28a745; /* A brighter green on hover for better user feedback */
+  color: #28a745;
+}
+
+.saved-recipe-list {
+  list-style: none; /* Removes the bullet points */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Removes default margin */
+}
+
+/* Style individual saved recipe items */
+.saved-recipe-item {
+  display: flex; /* Aligns items in a flex row */
+  justify-content: space-between; /* Ensures equal spacing between elements */
+  align-items: center; /* Aligns items vertically */
+}
+
+/* Modify the .recipe-name class if it's being used */
+.recipe-name {
+  flex-grow: 1; /* Allows the recipe name to expand */
+}
+
+/* Style for the 'View' link */
+.view-button, .remove-button {
+  padding: 5px 10px; /* Adjust padding to your preference */
+  margin-left: 10px; /* Creates space to the left of the buttons */
+  text-decoration: none; /* Removes underline from the links */
+  color: black; /* Sets the text color to black for both buttons */
+  border: 1px solid #ccc; /* Adds a border to make it look like a button */
+  border-radius: 4px; /* Rounds the corners of the buttons */
+  font-size: 0.8em; /* Matches the font size to other text */
+  background-color: transparent; /* Ensures no background color is affecting the view */
+  cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
 }
