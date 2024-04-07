@@ -10,6 +10,7 @@ const RecipeFinder = () => {
   const [ingredientsArray, setIngredientsArray] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [savedRecipes, setSavedRecipes] = useState(() => {
+    // Retrieve saved recipes from localStorage or set to empty array
     const localData = localStorage.getItem('savedRecipes');
     return localData ? JSON.parse(localData) : [];
   });
@@ -36,6 +37,7 @@ const RecipeFinder = () => {
   useEffect(() => {
     localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
   }, [savedRecipes]);
+
   useEffect(() => {
     localStorage.setItem('allergens', JSON.stringify(allergensArray));
   }, [allergensArray]);
@@ -114,14 +116,11 @@ const RecipeFinder = () => {
     });
   };
 
-   
   const handleSaveRecipe = (recipe) => {
     const isAlreadySaved = savedRecipes.some(savedRecipe => savedRecipe.RecipeId === recipe.RecipeId);
     if (!isAlreadySaved) {
       const newSavedRecipes = [...savedRecipes, recipe];
       setSavedRecipes(newSavedRecipes);
-      // Additionally save to localStorage
-      localStorage.setItem('savedRecipes', JSON.stringify(newSavedRecipes));
     }
   };
 
@@ -220,15 +219,15 @@ const RecipeFinder = () => {
         <button onClick={() => addAllergen(ingredientInput)}>Add as Allergen</button>
       </div>
     
-      {/* Display added ingredients */}
       <div className="subheading-text">Added Ingredients</div>
-      <div className="ingredients-list">
-        {ingredientsArray.map((ingredient, index) => (
-          <div key={index} className="ingredient-box">
-            {ingredient}
-          </div>
-        ))}
-      </div>
+    <div className="ingredients-list">
+      {ingredientsArray.map((ingredient, index) => (
+        <div key={index} className="ingredient-box">
+          {ingredient}
+        </div>
+      ))}
+    </div>
+    
       <div className="subheading-text">Dietary Restrictions</div>
       <div className="dietary-restrictions">
         {/* ... (Dietary restrictions checkboxes) */}

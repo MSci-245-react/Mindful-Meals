@@ -1,35 +1,72 @@
 .container {
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
-  margin-top: 100px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 80px;
+  width: 800px;
   font-family: 'Poppins', sans-serif;
 }
 
 .heading-text {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333;
+  margin: 5px 0;
+  font-size: 30px;
+  font-weight: bold;
 }
 
 .subheading-text {
-  margin: 20px 0 10px;
-  font-size: 20px;
-  color: #333;
+  text-align: center;
+  margin: 5px 0;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.ingredient-input, 
-.dietary-restrictions {
+.ingredient-input {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+  align-items: left;
 }
+
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.recipe-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.recipe-title {
+  font-weight: bold;
+}
+
+th {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+}
+
+thead {
+  background-color: #f4f4f4; /* Light gray background */
+}
+
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #ddd; /* Light gray border */
+  padding: 8px;
+  font-size: 14px;
+}
+
+
 
 .ingredient-input > button, 
 .recipe-buttons > button,
@@ -42,6 +79,9 @@
     padding: 8px 15px;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+  flex-direction: column;
+  align-items: center;
     transition: all 0.2s ease;
   }
   
@@ -89,18 +129,20 @@
 }
 
 .allergens-section {
+  position: relative; /* Establishes a positioning context for dropdown */
   text-align: center;
-  position: relative; /* Context for positioning dropdown */
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* Space below the dropdown */
 }
 
 /* Styling for the allergen button to match the dropdown width */
-.allergens-button {
-  width: calc(100% - 20px); /* Match dropdown width */
-  margin: 10px 0; /* Margin for spacing */
-  background-color: transparent;
-  color: #5cb85c;
-  border: 1px solid #5cb85c;
+.allergens-dropdown-btn {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 0; /* Remove margin between button and dropdown */
 }
 .allergens-dropdown-content {
   position: absolute;
@@ -113,6 +155,19 @@
   background-color: #fff;
   border-radius: 4px;
   z-index: 1;
+}
+
+.allergen-item {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space between ingredient name and 'x' */
+  align-items: center; /* Align items vertically */
+  padding: 5px; /* Add padding as needed */
+  margin-bottom: 5px; /* Space between each allergen item */
+}
+
+.allergen-name {
+  flex-grow: 1; /* Allows the ingredient name to fill the space */
+  white-space: nowrap; /* Prevents the text from wrapping */
 }
 
 /* Ensure the dropdown is displayed when the allergens button is active */
@@ -137,14 +192,13 @@
 
 /* Close icon (x) within each allergen pill */
 .remove-x {
-  cursor: pointer; /* Changes cursor on hover */
-  color: #999; /* Dark gray, change as needed */
-  float: right;
-  padding: 30px;
+  cursor: pointer;
+  color: #d32f2f; /* Red color for the 'x' */
+  margin-left: 10px; /* Space to the left of the 'x' */
 }
 
 .remove-x:hover {
-  color: #666; /* Darker gray on hover for feedback */
+  color: #9a0007; /* Darker red on hover for feedback */
 }
 
 /* Increase the width of the dropdown to fit the content */
@@ -233,3 +287,4 @@ input[type="checkbox"] {
   display: flex;
   gap: 10px; /* Space between buttons */
 }
+
