@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import {initializeApp} from 'firebase/app';
 
 import {
   getAuth,
@@ -10,13 +10,13 @@ import {
 } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC5CLoJPdyU3nwl5pRuRqIx4PWh4P86kGI",
-  authDomain: "msci342-b33b4.firebaseapp.com",
-  projectId: "msci342-b33b4",
-  storageBucket: "msci342-b33b4.appspot.com",
-  messagingSenderId: "466908495816",
-  appId: "1:466908495816:web:b5f8a1a7b94573df538afd",
-  measurementId: "G-RT0JJDB1ZW"
+  apiKey: 'AIzaSyC5CLoJPdyU3nwl5pRuRqIx4PWh4P86kGI',
+  authDomain: 'msci342-b33b4.firebaseapp.com',
+  projectId: 'msci342-b33b4',
+  storageBucket: 'msci342-b33b4.appspot.com',
+  messagingSenderId: '466908495816',
+  appId: '1:466908495816:web:b5f8a1a7b94573df538afd',
+  measurementId: 'G-RT0JJDB1ZW',
 };
 
 const app = initializeApp(firebaseConfig);

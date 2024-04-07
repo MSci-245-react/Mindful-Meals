@@ -91,12 +91,34 @@ td {
   }
 }
 
+<<<<<<< HEAD
 .ingredient-input > button:hover,
 .recipe-buttons > button:hover,
 .allergens-button:hover {
   background-color: transparent;
     color: #5cb85c; /* Green text color for buttons */
     border: 1px solid #5cb85c;
+=======
+.recipe-buttons button {
+  width: 400px;
+  margin: 0 auto;
+  padding: 5px;
+}
+
+.dietary-restrictions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ingredients-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between boxes */
+  justify-content: center; /* Center boxes */
+  padding: 5px 0;
+>>>>>>> 41efc49f566adadb0926084157d00f2acc71f260
 }
 
 .ingredient-box {
@@ -129,22 +151,37 @@ td {
 }
 
 .allergens-section {
+<<<<<<< HEAD
   position: relative; /* Establishes a positioning context for dropdown */
   text-align: center;
   margin-bottom: 20px; /* Space below the dropdown */
+=======
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+>>>>>>> 41efc49f566adadb0926084157d00f2acc71f260
 }
 
 /* Styling for the allergen button to match the dropdown width */
 .allergens-dropdown-btn {
   padding: 10px;
+<<<<<<< HEAD
   background-color: #28a745;
   color: white;
   border: none;
   cursor: pointer;
   outline: none;
   margin-bottom: 0; /* Remove margin between button and dropdown */
+=======
+  background-color: #f9f9f9;
+  color: #333;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  outline: none;
+>>>>>>> 41efc49f566adadb0926084157d00f2acc71f260
 }
 .allergens-dropdown-content {
+<<<<<<< HEAD
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -155,6 +192,20 @@ td {
   background-color: #fff;
   border-radius: 4px;
   z-index: 1;
+=======
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  padding: 10px;
+  border-radius: 5px;
+  top: 100%;
+  margin-top: 2px;
+>>>>>>> 41efc49f566adadb0926084157d00f2acc71f260
 }
 
 .allergen-item {
@@ -175,6 +226,7 @@ td {
   display: block;
 }
 
+<<<<<<< HEAD
 .dropdown-item {
   justify-content: space-between; /* pushes the 'x' to the end */
   padding: 5px 0; /* Adjust this value to increase vertical spacing */
@@ -192,6 +244,18 @@ td {
 
 /* Close icon (x) within each allergen pill */
 .remove-x {
+=======
+.allergen-pill {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.allergen-remove-btn {
+  margin-left: 10px;
+  background-color: transparent;
+  border: none;
+>>>>>>> 41efc49f566adadb0926084157d00f2acc71f260
   cursor: pointer;
   color: #d32f2f; /* Red color for the 'x' */
   margin-left: 10px; /* Space to the left of the 'x' */
@@ -280,8 +344,23 @@ input[type="checkbox"] {
   color: #333; /* Text color */
 }
 
+<<<<<<< HEAD
 .view-remove-button:hover {
   background-color: #e9e9e9; /* Slightly darker background on hover */
+=======
+/* Style for the 'View' link */
+.view-button,
+.remove-button {
+  padding: 5px 10px; /* Adjust padding to your preference */
+  margin-left: 10px; /* Creates space to the left of the buttons */
+  text-decoration: none; /* Removes underline from the links */
+  color: black; /* Sets the text color to black for both buttons */
+  border: 1px solid #ccc; /* Adds a border to make it look like a button */
+  border-radius: 4px; /* Rounds the corners of the buttons */
+  font-size: 0.8em; /* Matches the font size to other text */
+  background-color: transparent; /* Ensures no background color is affecting the view */
+  cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+>>>>>>> 41efc49f566adadb0926084157d00f2acc71f260
 }
 .button-container {
   display: flex;

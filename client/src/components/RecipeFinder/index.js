@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import './recipeFinder.css';
 
 const serverURL = '';
@@ -116,6 +116,11 @@ const RecipeFinder = () => {
     });
   };
 
+  const handleSaveRecipe = recipe => {
+    const isAlreadySaved = savedRecipes.some(
+      savedRecipe => savedRecipe.RecipeId === recipe.RecipeId,
+    );
+
   const handleSaveRecipe = (recipe) => {
     const isAlreadySaved = savedRecipes.some(savedRecipe => savedRecipe.RecipeId === recipe.RecipeId);
     if (!isAlreadySaved) {
@@ -139,17 +144,25 @@ const RecipeFinder = () => {
   const handleRemoveAllergen = (index) => {
     setAllergensArray(prevAllergens => prevAllergens.filter((_, i) => i !== index));
   };
+
+  const handleRemoveRecipe = recipeId => {
+    const updatedSavedRecipes = savedRecipes.filter(
+      recipe => recipe.RecipeId !== recipeId,
+    );
   
   const handleRemoveRecipe = (recipeId) => {
     const updatedSavedRecipes = savedRecipes.filter(recipe => recipe.RecipeId !== recipeId);
     setSavedRecipes(updatedSavedRecipes);
+    localStorage.setItem('savedRecipes', JSON.stringify(updatedSavedRecipes));
+  };
+
     // No need to manually save to localStorage here since useEffect will handle it
   };
   const handleToggleSavedRecipes = () => {
     setShowSavedRecipes(!showSavedRecipes);
   };
 
-  const handleIngredientChange = (e) => {
+  const handleIngredientChange = e => {
     setIngredientInput(e.target.value);
   };
 
@@ -192,7 +205,6 @@ const RecipeFinder = () => {
   const clearSearch = () => {
     setRecipes([]);
   };
-
 
   const goToNextPage = () => {
     setCurrentPage(current => Math.min(current + 1, totalPages));
@@ -280,7 +292,9 @@ const RecipeFinder = () => {
       <div className="recipe-buttons">
         <button onClick={getRecipes}>Search Recipes</button>
         <button onClick={clearSearch}>Clear Recipes</button>
-        <button onClick={handleToggleSavedRecipes}>{showSavedRecipes ? 'Hide Saved' : 'Show Saved'} Recipes</button>
+        <button onClick={handleToggleSavedRecipes}>
+          {showSavedRecipes ? 'Hide Saved' : 'Show Saved'} Recipes
+        </button>
       </div>
       
 
@@ -291,39 +305,41 @@ const RecipeFinder = () => {
             <div key={index}>
               {recipe.Name}
               <Link to={`/recipe/${recipe.RecipeId}`}>View</Link>
-              <button onClick={() => handleRemoveRecipe(recipe.RecipeId)}>Remove</button>
+              <button onClick={() => handleRemoveRecipe(recipe.RecipeId)}>
+                Remove
+              </button>
             </div>
           ))}
         </div>
       )}
-       
-       {recipes.length > 0 && (
-  <>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Ingredients</th>
-          <th>Actions</th> {/* Add this header */}
-        </tr>
-      </thead>
-      <tbody>
-        {currentRecipes.map((recipe, index) => (
-          <tr key={index}>
-            <td>
-              <Link to={`/recipe/${recipe.RecipeId}`}>{recipe.Name}</Link>
-            </td>
-            <td>{recipe.RecipeIngredientParts}</td>
-            <td>
-              {/* Add the Save Recipe button */}
-              <button onClick={() => handleSaveRecipe(recipe)}>
-                Save Recipe
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+
+      {recipes.length > 0 && (
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Ingredients</th>
+                <th>Actions</th> {/* Add this header */}
+              </tr>
+            </thead>
+            <tbody>
+              {currentRecipes.map((recipe, index) => (
+                <tr key={index}>
+                  <td>
+                    <Link to={`/recipe/${recipe.RecipeId}`}>{recipe.Name}</Link>
+                  </td>
+                  <td>{recipe.RecipeIngredientParts}</td>
+                  <td>
+                    {/* Add the Save Recipe button */}
+                    <button onClick={() => handleSaveRecipe(recipe)}>
+                      Save Recipe
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           <div className="pagination">
             <button onClick={goToPreviousPage} disabled={currentPage === 1}>
               Previous
@@ -339,6 +355,7 @@ const RecipeFinder = () => {
       )}
     </div>
   );
+};
 
   }
 export default RecipeFinder;
