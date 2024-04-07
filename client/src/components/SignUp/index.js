@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { withFirebase } from '../Firebase';
 import './SignUp.css';
-
 
 const serverURL = '';
 
-const SignUp = () => {
+const SignUp = ({ firebase }) => {
 
-  // create the states of the various fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userName, setUserName] = useState('');
@@ -16,46 +15,46 @@ const SignUp = () => {
   const [isValiid, setIsValid] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [errors, setErrors] = useState({});
-  // const navigate = useNavigate();
 
   const handleFirstNameChange = event => {
     // update the state of the firstName
     setFirstName(event.target.value);
 
     // set the error state to false
-    setErrors(prevErrors => ({...prevErrors, firstName: false}));
+    setErrors(prevErrors => ({ ...prevErrors, firstName: false }));
 
-    // don't show confirmation message
     setShowConfirmation(false);
   };
 
   const handleLastNameChange = event => {
     setLastName(event.target.value);
-    setErrors(prevErrors => ({...prevErrors, lastName: false}));
+    setErrors(prevErrors => ({ ...prevErrors, lastName: false }));
     setShowConfirmation(false);
   };
 
   const handleUserNameChange = event => {
     setUserName(event.target.value);
-    setErrors(prevErrors => ({...prevErrors, userName: false}));
+    setErrors(prevErrors => ({ ...prevErrors, userName: false }));
     setShowConfirmation(false);
   };
 
   const handleEmailChange = event => {
     setEmail(event.target.value);
-    setErrors(prevErrors => ({...prevErrors, email: false}));
+    setErrors(prevErrors => ({ ...prevErrors, email: false }));
     setShowConfirmation(false);
   };
 
   const handlePasswordChange = event => {
     setPassword(event.target.value);
-    setErrors(prevErrors => ({...prevErrors, password: false}));
+    setErrors(prevErrors => ({ ...prevErrors, password: false }));
     setShowConfirmation(false);
   };
 
   const handleRedirect = () => {
-    window.location.href='/SignIn';
+    window.location.href = '/SignIn';
   };
+
+
 
   // function to call the sign up api function
   const callApiSignUp = async reviewData => {
@@ -138,14 +137,32 @@ const SignUp = () => {
           setUserName('');
           setEmail('');
           setPassword('');
-          
           setTimeout(() => {
             handleRedirect();
           }, 5000);
-        
+
         })
         .catch(error => {
           console.error('Error adding user:', error.message);
+        });
+
+      firebase
+        .doCreateUserWithEmailAndPassword(email, password)
+        .then(authUser => {
+          // User creation successful, you can handle any additional actions here
+          console.log('User created successfully:', authUser);
+          setShowConfirmation(true);
+          setErrors({});
+          setFirstName('');
+          setLastName('');
+          setUserName('');
+          setEmail('');
+          setPassword('');
+        })
+        .catch(error => {
+          // Handle Firebase authentication errors
+          console.error('Error creating user:', error);
+          setErrors({ firebase: error.message }); // Set Firebase error message
         });
     }
   };
@@ -223,9 +240,9 @@ const SignUp = () => {
       </form>
 
       {showConfirmation &&
-      <p>Sign up successful! Redirecting...</p>}
+        <p>Sign up successful! Redirecting...</p>}
     </div>
   );
 };
 
-export default SignUp;
+export default withFirebase(SignUp);

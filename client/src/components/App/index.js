@@ -1,31 +1,36 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from '../HomePage';
-import SignUp from '../SignUp';
-import SignIn from '../SignIn';
-import Profilepage from '../Profilepage'
-import NutritionalInformation from '../NutritionalInformation';
-import RecipeFinder from '../RecipeFinder';
-import RecipeDetail from '../RecipeDetail';
-import NavigationBar from '../NavigationBar';
-import CartProvider from '../Cart'; // Using braces for a named export
-import CartPage from '../CartPage'; 
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import CartProvider from '../Cart';
+import {FirebaseContext} from '../Firebase';
+import {useState, useContext, useEffect} from 'react';
+import PrivateRoute from '../Navigation/PrivateRoute';
 
 function App() {
+  const [authUser, setAuthUser] = useState(null);
+  const firebase = useContext(FirebaseContext);
+
+  useEffect(() => {
+    if (firebase) {
+      const listener = firebase.auth.onAuthStateChanged(user => {
+        if (user) {
+          setAuthUser(user);
+        } else {
+          setAuthUser(null);
+        }
+      });
+
+      // Cleanup function
+      return () => listener();
+    }
+  }, [firebase]);
+
+  // Determine authentication status based on authUser's presence
+  const authenticated = !!authUser;
+
   return (
-    <CartProvider> {/* Wrap your application with CartProvider */}
+    <CartProvider>
       <Router>
-        <NavigationBar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/SignIn" element={<SignIn />} />
-          <Route path="/Profilepage" element={<Profilepage />} />
-          <Route path="/NutritionalInformation" element={<NutritionalInformation />} />
-          <Route path="/RecipeFinder" element={<RecipeFinder />} />
-          <Route path="/recipe/:RecipeId" element={<RecipeDetail />} />
-          <Route path="/cart" element={<CartPage />} />
-        </Routes>
+        <PrivateRoute authUser={authUser} authenticated={authenticated} />
       </Router>
     </CartProvider>
   );

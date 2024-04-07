@@ -1,13 +1,70 @@
 import React, { useState, useContext } from 'react'; // Added useState to the import
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@mui/material/Link';
-import { CartContext } from '../Cart';  
-import CartDropdown from '../Cart/CartDropdown'; 
+import { CartContext } from '../Cart';
+import CartDropdown from '../Cart/CartDropdown';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import HomePage from '../HomePage';
+import SignIn from '../SignIn';
+import { withFirebase } from '../Firebase';
+import { useNavigate } from 'react-router-dom';
+import { IconButton } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
-const NavigationBar = () => {
+
+const NavigationBar = ({ authenticated }) => {
   const { cartItems } = useContext(CartContext);
-  const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+  const cartItemCount = cartItems.reduce(
+    (count, item) => count + item.quantity,
+    0,
+  );
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const renderSignOutLink = authenticated ? (
+    <li>
+      <Link
+        component={RouterLink}
+        to="/SignOut"
+        style={{ textDecoration: 'none', color: '#fff' }}
+      >
+        SignOut
+      </Link>
+    </li>
+  ) : null;
+
+  const renderNutritionalLink = authenticated ? (
+    <li>
+      <Link
+        component={RouterLink}
+        to="/NutritionalInformation"
+        style={{ textDecoration: 'none', color: '#fff' }}
+      >
+        Nutritional Information
+      </Link>
+    </li>
+  ) : null;
+
+  const renderReceipesLink = authenticated ? (
+    <li>
+      <Link
+        component={RouterLink}
+        to="/RecipeFinder"
+        style={{ textDecoration: 'none', color: '#fff' }}
+      >
+        Recipe Finder
+      </Link>
+    </li>
+  ) : null;
+
+  const renderGroceriesLink = authenticated ? (
+    <li
+      style={{ cursor: 'pointer', color: '#fff' }}
+      onClick={() => setIsCartOpen(!isCartOpen)}
+    >
+      Grocery Cart ({cartItemCount})
+    </li>
+  ) : null;
+
 
   return (
     <div>
@@ -75,43 +132,27 @@ const NavigationBar = () => {
         `}
       </style>
       <nav>
-      <div className="menu">
+        <div className="menu">
           <div className="logo">
-            <Link component={RouterLink} to="/" style={{ textDecoration: 'none', color: '#fff' }}>
+            <Link
+              component={RouterLink}
+              to="/"
+              style={{ textDecoration: 'none', color: '#fff' }}
+            >
               Mindful Meals
             </Link>
           </div>
           <ul>
-            <li>
-              <Link component={RouterLink} to="/SignUp" style={{ textDecoration: 'none', color: '#fff' }}>
-                Sign Up
-              </Link>
-            </li>
-            <li>
-              <Link component={RouterLink} to="/SignIn" style={{ textDecoration: 'none', color: '#fff' }}>
-                Sign In
-              </Link>
-            </li>
-            <li>
-              <Link component={RouterLink} to="/NutritionalInformation" style={{ textDecoration: 'none', color: '#fff' }}>
-                Nutritional Info
-              </Link>
-            </li>
-            <li>
-              <Link component={RouterLink} to="/RecipeFinder" style={{ textDecoration: 'none', color: '#fff' }}>
-                Find Recipes
-              </Link>
-            </li>
-            <li style={{ cursor: 'pointer', color: '#fff' }} onClick={() => setIsCartOpen(!isCartOpen)}>
-              Grocery Cart ({cartItemCount})
-            </li>
+            {renderNutritionalLink}
+            {renderReceipesLink}
+            {renderGroceriesLink}
           </ul>
           {isCartOpen && <CartDropdown />}
+          {renderSignOutLink}
         </div>
-      </nav>
-    </div>
+      </nav >
+    </div >
   );
 };
-
 
 export default NavigationBar;
