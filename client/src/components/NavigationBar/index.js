@@ -39,7 +39,7 @@ const NavigationBar = ({ authenticated }) => {
         to="/NutritionalInformation"
         style={{ textDecoration: 'none', color: '#fff' }}
       >
-        SignOut
+        Nutritional Information
       </Link>
     </li>
   ) : null;
@@ -51,7 +51,7 @@ const NavigationBar = ({ authenticated }) => {
         to="/RecipeFinder"
         style={{ textDecoration: 'none', color: '#fff' }}
       >
-        SignOut
+        Recipe Finder
       </Link>
     </li>
   ) : null;

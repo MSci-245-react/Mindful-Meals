@@ -3,8 +3,9 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import backgroundImage from './background.jpg';
 import { useNavigate } from 'react-router-dom';
+import PrivateRoute from '../Navigation/PrivateRoute';
 
-const Landing = () => {
+const Landing = ({ authenticated }) => {
   const navigate = useNavigate();
 
   const containerStyle = {
@@ -54,8 +55,12 @@ const Landing = () => {
 
           Mindful Meals
         </Typography>
-        <button style={buttonStyle} onClick={handleSignIn}>Sign In</button>
-        <button style={buttonStyle} onClick={handleSignUp}>Sign Up</button>
+        {!authenticated && (
+          <div style={buttonContainerStyle}>
+            <button style={buttonStyle} onClick={handleSignIn}>Sign In</button>
+            <button style={buttonStyle} onClick={handleSignUp}>Sign Up</button>
+          </div>
+        )}
       </div>
     </div >
   );

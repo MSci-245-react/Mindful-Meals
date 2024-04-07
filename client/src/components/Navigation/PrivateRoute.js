@@ -16,18 +16,12 @@ const PrivateRoute = ({ authenticated }) => {
     <React.Fragment>
       <NavigationBar authenticated={authenticated} />
       < Routes >
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage authenticated={authenticated} />} />
         <Route path="/SignUp" element={<SignUp />} />
-        <Route
-          path="/SignIn"
-          element={
-            authenticated ? <Navigate replace to="/RecipeFinder" /> : <SignIn />
-          }
-        />
+        <Route path="/SignIn" element={<SignIn />} />
         <Route path="/Profilepage" element={<Profilepage />} />
         <Route path="/SignOut" element={<SignOut />} />
-        <Route
-          path="/NutritionalInformation"
+        <Route path="/NutritionalInformation"
           element={<NutritionalInformation />}
         />
         <Route path="/RecipeFinder" element={<RecipeFinder />} />
