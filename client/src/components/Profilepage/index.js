@@ -1,242 +1,224 @@
-// import React, { useState, useEffect } from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
-// import { Container, Typography, TextField, Button, FormControl, InputLabel, MenuItem, Select, Dialog, DialogTitle, DialogContent, DialogActions  } from '@material-ui/core';
-// import defaultProfilePic from './profile-pic.jpg';
-// import HomePage from '../HomePage';
-// import Checkbox from '@material-ui/core/Checkbox';
-// import ListItemText from '@material-ui/core/ListItemText'; 
+import React, { useState, useEffect } from 'react';
+import { withFirebase } from '../Firebase';
+import './Profilepage.css';
+import defaultProfilePic from './profile-pic.jpg';
 
-// const useStyles = makeStyles((theme) => ({
-//   profileContainer: {
-//     marginTop: theme.spacing(4),
-//   },
-//   greeting: {
-//     marginBottom: theme.spacing(2),
-//   },
-//   formControl: {
-//     marginBottom: theme.spacing(2),
-//   },
-// }));
+const ProfilePage = ({ firebase }) => {
+    const [userProfile, setUserProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [editingBio, setEditingBio] = useState(false);
+    const [bio, setBioText] = useState('');
+    const [selectedRestrictions, setSelectedRestrictions] = useState([]);
+    const [selectedAllergies, setSelectedAllergies] = useState([]);
+    const [successMessage, setSuccessMessage] = useState('');
 
-// const ProfilePage = (props) => {
-//   const classes = useStyles();
-//   const [allergens, setAllergens] = useState([]); 
-//   const [userData, setUserData] = useState(null);
-//   const [error, setError] = useState(null);
-//   const [bio, setBio] = useState('');
-//   const [dietaryRestrictions, setDietaryRestrictions] = useState('');
-//   const [selectedRestrictions, setSelectedRestrictions] = useState([]);
-//   const [openDialog, setOpenDialog] = useState(false);
-//   const [successMessage, setSuccessMessage] = useState('');
-//   const handleAllergenChange = (event) => {
-//     setSelectedAllergens(event.target.value);
-//   }; 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const userName = localStorage.getItem('userName');
-//         const password = localStorage.getItem('password');
-//         const response = await fetch('/api/profilePage', {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({ userName: userName, password: password }),
-//         });
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const user = firebase.auth.currentUser;
+                if (user) {
+                    const response = await fetch(`/api/profilePage?email=${user.email}`);
+                    if (response.ok) {
+                        const profileData = await response.json();
+                        setUserProfile(profileData);
+                        setBioText(profileData.bio || '');
+                        setSelectedRestrictions(profileData.dietaryRestrictions ? profileData.dietaryRestrictions.split(',').map(str => str.trim()) : []);
+                        setSelectedAllergies(profileData.allergies ? profileData.allergies.split(',').map(str => str.trim()) : []);
+                    } else {
+                        console.error('Failed to fetch user profile:', response.statusText);
+                    }
+                } else {
+                    console.error('No user signed in.');
+                }
+            } catch (error) {
+                console.error('Error fetching user profile:', error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-//         if (response.ok) {
-//           const data = await response.json();
-//           setUserData(data);
-//           setBio(data.bio || '');
-//           setDietaryRestrictions(data.dietaryRestrictions || '');
-//           setSelectedRestrictions(data.dietaryRestrictions ? data.dietaryRestrictions.split(',').map(str => str.trim()) : []);
-//         } else {
-//           const errorData = await response.json();
-//           setError(errorData.error || 'Profile page failed');
-//         }
-//       } catch (error) {
-//         // setError('An error occurred while signing in');
-//         console.error('Error signing in:', error);
-//       }
-//     };
+        fetchUserProfile();
+    }, [firebase.auth.currentUser]);
 
-//     fetchData();
-//   }, []);
+    const handleBioEdit = () => {
+        setEditingBio(true);
+    };
 
-//   const handleDeleteAccount = async () => {
-//     try {
-//         const userName = localStorage.getItem('userName');
-//         const password = localStorage.getItem('password');
-//         const response = await fetch('/api/deleteAccount', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 userName: userName, 
-//                 password: password,
-//             }),
-//         });
+    const handleBioSave = async () => {
+        try {
+            const user = firebase.auth.currentUser;
+            const response = await fetch('/api/updateBio', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    bio: bio,
+                }),
+            });
+            if (response.ok) {
+                setUserProfile(prevState => ({
+                    ...prevState,
+                    bio: bio,
+                }));
+                setEditingBio(false);
+                setSuccessMessage('Bio updated successfully');
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 30000);
+            } else {
+                console.error('Failed to update bio:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating bio:', error.message);
+        }
+    };
 
-//         if (response.ok) {
-//             setSuccessMessage('Account deleted successfully.');
-//             setTimeout(() => {
-//               window.location.href = '/SignUp';
-//             }, 3000);
-//             const errorData = await response.json();
-//             setError(errorData.error || 'Failed to delete account');
-//           }
-//         } catch (error) {
-//           setError('An error occurred while deleting account');
-//           console.error('Error deleting account:', error);
-//         }
-//       };
+    const handleDietaryRestrictionSave = async () => {
+        try {
+            const user = firebase.auth.currentUser;
+            const response = await fetch('/api/updateDietaryRestrictions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    dietaryRestrictions: selectedRestrictions.join(', '),
+                }),
+            });
+            if (response.ok) {
+                setSuccessMessage('Dietary restrictions updated successfully');
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 30000); // Set timeout to clear success message after 30 seconds
+            } else {
+                console.error('Failed to update dietary restrictions:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating dietary restrictions:', error.message);
+        }
+    };
 
-//       const handleOpenDialog = () => {
-//         setOpenDialog(true);
-//       };
-    
-//       const handleCloseDialog = () => {
-//         setOpenDialog(false);
-//       };
-    
+    const handleAllergySave = async () => {
+        try {
+            const user = firebase.auth.currentUser;
+            const response = await fetch('/api/updateAllergies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    allergies: selectedAllergies.join(', '),
+                }),
+            });
+            if (response.ok) {
+                setSuccessMessage('Allergies updated successfully');
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 30000); // Set timeout to clear success message after 30 seconds
+            } else {
+                console.error('Failed to update allergies:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating allergies:', error.message);
+        }
+    };
 
-//   const handleBioChange = (event) => {
-//     setBio(event.target.value);
-//   };
+    const handleBioChange = (event) => {
+        setBioText(event.target.value);
+    };
 
-//   const handleDietaryRestrictionChange = (event) => {
-//     const selectedOptions = event.target.value;
-//     setSelectedRestrictions(selectedOptions);
-//     setDietaryRestrictions(selectedOptions.join(', '));
-//   };
+    const toggleSelectedRestriction = (restriction) => {
+        setSelectedRestrictions(prevSelected => {
+            if (prevSelected.includes(restriction)) {
+                return prevSelected.filter(item => item !== restriction);
+            } else {
+                return [...prevSelected, restriction];
+            }
+        });
+    };
 
-//   const saveChanges = async () => {
-//     try {
-//       const userName = localStorage.getItem('userName');
-//       const password = localStorage.getItem('password');
-//       const response = await fetch('/api/saveProfileChanges', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           userName: userName,
-//           password: password,
-//           bio: bio,
-//           dietaryRestrictions: dietaryRestrictions,
-//         }),
-//       });
+    const toggleSelectedAllergy = (allergy) => {
+        setSelectedAllergies(prevSelected => {
+            if (prevSelected.includes(allergy)) {
+                return prevSelected.filter(item => item !== allergy);
+            } else {
+                return [...prevSelected, allergy];
+            }
+        });
+    };
 
-//       if (!response.ok) {
-//         const errorData = await response.json();
-//         setError(errorData.error || 'Failed to save changes');
-//       } else {
-//         setSuccessMessage('Changes saved successfull')
-//       }
-//     } catch (error) {
-//       setError('An error occurred while saving changes');
-//       console.error('Error saving changes:', error);
-//     }
-//     const payload = {
-//       userName: userName,
-//       password: password,
-//       bio: bio,
-//       dietaryRestrictions: dietaryRestrictions,
-//       allergens: selectedAllergens.join(','),
-//   };
-//   return (
-//     <Container maxWidth="md" className={classes.profileContainer}>
-//       {/* ... Existing JSX code for profile pic, greeting, etc. */}
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-//       {/* Bio Field */}
-//       <TextField
-//         label="Bio"
-//         variant="outlined"
-//         className={classes.formControl}
-//         fullWidth
-//         multiline
-//         value={bio}
-//         onChange={handleBioChange}
-//         inputProps={{ maxLength: 200 }}
-//         style={{ maxWidth: '500px' }}
-//       />
+    if (!userProfile) {
+        return <div>No user profile found</div>;
+    }
 
-//       {/* Dietary Restrictions Dropdown */}
-//       <FormControl variant="outlined" className={classes.formControl} style={{ width: '100%' }}>
-//         <InputLabel id="dietary-restrictions-label">Dietary Restrictions</InputLabel>
-//         <Select
-//           labelId="dietary-restrictions-label"
-//           id="dietary-restrictions"
-//           multiple
-//           value={selectedRestrictions}
-//           onChange={handleDietaryRestrictionChange}
-//           label="Dietary Restrictions"
-//           renderValue={(selected) => selected.join(', ')}
-//         >
-//           {/* ...map through restrictions and render MenuItems */}
-//         </Select>
-//       </FormControl>
+    return (
+        <div className="profile-container">
+            <h1>Welcome to Mindful Meals, {userProfile.firstName} {userProfile.lastName}</h1>
 
-//       {/* Allergens Checkboxes */}
-//       <FormControl variant="outlined" className={classes.formControl} style={{ width: '100%' }}>
-//         <InputLabel id="allergen-checkbox-label">Allergens</InputLabel>
-//         <Select
-//           labelId="allergen-checkbox-label"
-//           id="allergens"
-//           multiple
-//           value={selectedAllergens}
-//           onChange={handleAllergenChange}
-//           renderValue={(selected) => selected.join(', ')}
-//         >
-//           {availableAllergens.map((allergen) => (
-//             <MenuItem key={allergen} value={allergen}>
-//               <Checkbox checked={selectedAllergens.indexOf(allergen) > -1} />
-//               <ListItemText primary={allergen} />
-//             </MenuItem>
-//           ))}
-//         </Select>
-//       </FormControl>
+            <div className="profile-section">
+                <img src={defaultProfilePic} alt="Profile" style={{ position: 'absolute', top: '210px', right: '400px', width: '300px', height: '300px' }} />
+            </div>
 
-//       {/* Save and Delete Account Buttons */}
-//       <Button variant="contained" color="primary" onClick={saveChanges} className={classes.saveButton}>
-//         Save Changes
-//       </Button>
-//       <Button variant="contained" color="secondary" onClick={handleOpenDialog} className={classes.deleteButton}>
-//         Delete Account
-//       </Button>
+            <div className="profile-section">
+                <h2>Email & Password</h2>
+                <p>Email: {userProfile.email}</p>
+                <p>Password: **********</p>
+            </div>
 
-//       {/* Delete Account Dialog */}
-//       <Dialog
-//         open={openDialog}
-//         onClose={handleCloseDialog}
-//         aria-labelledby="alert-dialog-title"
-//         aria-describedby="alert-dialog-description"
-//       >
-//         <DialogTitle id="alert-dialog-title">{"Delete Account"}</DialogTitle>
-//         <DialogContent>
-//           <Typography variant="body1">
-//             Are you sure you want to delete your account?
-//           </Typography>
-//         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={handleCloseDialog} color="primary">
-//             Cancel
-//           </Button>
-//           <Button onClick={handleDeleteAccount} color="secondary" autoFocus>
-//             Yes, Delete
-//           </Button>
-//         </DialogActions>
-//       </Dialog>
+            <div className="profile-section">
+                <h2>Bio</h2>
+                {editingBio ? (
+                    <>
+                        <textarea value={bio} onChange={handleBioChange} />
+                        <button onClick={handleBioSave}>Save Bio</button>
+                    </>
+                ) : (
+                    <>
+                        <p>{userProfile.bio}</p>
+                        <button onClick={handleBioEdit}>Edit Bio</button>
+                    </>
+                )}
+            </div>
 
-//       {/* Error Message Display */}
-//       {error && <Typography variant="body1">{error}</Typography>}
-      
-//       {/* Success Message Display */}
-//       {successMessage && <Typography variant="body1">{successMessage}</Typography>}
-//     </Container>
-//   );
-// };
-// };
+            <div className="profile-section">
+                <h2>Dietary Restrictions</h2>
+                <div>
+                    <button className={selectedRestrictions.includes('lactose') ? 'selected' : ''} onClick={() => toggleSelectedRestriction('lactose')}>Lactose</button>
+                    <button className={selectedRestrictions.includes('gluten-free') ? 'selected' : ''} onClick={() => toggleSelectedRestriction('gluten-free')}>Gluten-Free</button>
+                    <button className={selectedRestrictions.includes('vegetarian') ? 'selected' : ''} onClick={() => toggleSelectedRestriction('vegetarian')}>Vegetarian</button>
+                    <button className={selectedRestrictions.includes('vegan') ? 'selected' : ''} onClick={() => toggleSelectedRestriction('vegan')}>Vegan</button>
+                </div>
+                <button onClick={handleDietaryRestrictionSave}>Save Dietary Restrictions</button>
+            </div>
 
-// export default ProfilePage;
+            <div className="profile-section">
+                <h2>Allergies</h2>
+                <div>
+                    <button className={selectedAllergies.includes('peanuts') ? 'selected' : ''} onClick={() => toggleSelectedAllergy('peanuts')}>Peanuts</button>
+                    <button className={selectedAllergies.includes('shellfish') ? 'selected' : ''} onClick={() => toggleSelectedAllergy('shellfish')}>Shellfish</button>
+                    <button className={selectedAllergies.includes('soy') ? 'selected' : ''} onClick={() => toggleSelectedAllergy('soy')}>Soy</button>
+                    <button className={selectedAllergies.includes('tree nuts') ? 'selected' : ''} onClick={() => toggleSelectedAllergy('tree nuts')}>Tree Nuts</button>
+                </div>
+                <button onClick={handleAllergySave}>Save Allergies</button>
+            </div>
+
+            {
+                successMessage && (
+                    <div className="success-message">
+                        {successMessage}
+                    </div>
+                )
+            }
+        </div >
+    );
+};
+
+export default withFirebase(ProfilePage);

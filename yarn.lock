@@ -450,6 +450,7 @@
     tslib "^2.1.0"
 
 "@firebase/database-compat@1.0.4", "@firebase/database-compat@^1.0.2":
+"@firebase/database-compat@1.0.4", "@firebase/database-compat@^1.0.2":
   version "1.0.4"
   resolved "https://registry.npmjs.org/@firebase/database-compat/-/database-compat-1.0.4.tgz"
   integrity sha512-GEEDAvsSMAkqy0BIFSVtFzoOIIcKHFfDM4aXHtWL/JCaNn4OOjH7td73jDfN3ALvpIN4hQki0FcxQ89XjqaTjQ==

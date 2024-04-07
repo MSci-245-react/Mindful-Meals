@@ -112,12 +112,10 @@ const SignUp = ({ firebase }) => {
       hasErrors = true;
     }
 
-    // if there is any errors, we update the state of setErrors, and confirmation
     if (hasErrors) {
       setErrors(newErrors);
       setShowConfirmation(false);
     } else {
-      // create an object for the information we want to send to the database
       const reviewData = {
         firstName: firstName,
         lastName: lastName,
@@ -126,31 +124,22 @@ const SignUp = ({ firebase }) => {
         password: password,
       };
 
-      // call the API function
-      callApiSignUp(reviewData)
-        .then(res => {
-          console.log('callApiAddUser response: ', res);
-          setShowConfirmation(true);
-          setErrors({});
-          setFirstName('');
-          setLastName('');
-          setUserName('');
-          setEmail('');
-          setPassword('');
-          setTimeout(() => {
-            handleRedirect();
-          }, 5000);
-
-        })
-        .catch(error => {
-          console.error('Error adding user:', error.message);
-        });
-
       firebase
         .doCreateUserWithEmailAndPassword(email, password)
         .then(authUser => {
-          // User creation successful, you can handle any additional actions here
           console.log('User created successfully:', authUser);
+
+          // Call API to sign up user
+          return callApiSignUp({
+            firstName,
+            lastName,
+            userName,
+            email,
+            password,
+          });
+        })
+        .then(() => {
+          // Sign-up successful, handle redirection
           setShowConfirmation(true);
           setErrors({});
           setFirstName('');
@@ -158,91 +147,176 @@ const SignUp = ({ firebase }) => {
           setUserName('');
           setEmail('');
           setPassword('');
+
+          setTimeout(() => {
+            handleRedirect();
+          }, 5000);
         })
         .catch(error => {
-          // Handle Firebase authentication errors
           console.error('Error creating user:', error);
-          setErrors({ firebase: error.message }); // Set Firebase error message
+          setErrors({ firebase: error.message });
         });
     }
   };
 
+  // return (
+  //   <div className="container">
+  //     <h1>Sign Up</h1>
+  //     <form onSubmit={handleSubmit}>
+  //       <input
+  //         type="text"
+  //         name="firstName"
+  //         placeholder="First Name"
+  //         value={firstName}
+  //         onChange={handleFirstNameChange}
+  //         required
+  //       />
+  //       <br />
+  //       {errors.firstName && (
+  //         <span className="error">Please enter your first name</span>
+  //       )}
+
+  //       <input
+  //         type="text"
+  //         name="lastName"
+  //         placeholder="Last Name"
+  //         value={lastName}
+  //         onChange={handleLastNameChange}
+  //         required
+  //       />
+  //       <br />
+  //       {errors.lastName && (
+  //         <span className="error">Please enter your last name</span>
+  //       )}
+
+  //       <input
+  //         type="text"
+  //         name="userName"
+  //         placeholder="Username"
+  //         value={userName}
+  //         onChange={handleUserNameChange}
+  //         required
+  //       />
+  //       <br />
+  //       {errors.userName && (
+  //         <span className="error">Please enter a username</span>
+  //       )}
+
+  //       <input
+  //         type="email"
+  //         name="email"
+  //         placeholder="Email"
+  //         value={email}
+  //         onChange={handleEmailChange}
+  //         required
+  //       />
+  //       <br />
+  //       {errors.email && (
+  //         <span className="error">Please enter a valid email address</span>
+  //       )}
+
+  //       <input
+  //         type="password"
+  //         name="password"
+  //         placeholder="Password"
+  //         value={password}
+  //         onChange={handlePasswordChange}
+  //         required
+  //       />
+  //       <br />
+  //       {errors.password && (
+  //         <span className="error">Please enter a password</span>
+  //       )}
+
+  //       <button type="submit">Sign Up</button>
+  //     </form>
+
+  //     {showConfirmation &&
+  //       <p>Sign up successful! Redirecting...</p>}
+  //   </div>
+  // );
   return (
     <div className="container">
       <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="firstName"
-          placeholder="First Name"
-          value={firstName}
-          onChange={handleFirstNameChange}
-          required
-        />
-        <br />
-        {errors.firstName && (
-          <span className="error">Please enter your first name</span>
-        )}
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            value={firstName}
+            onChange={handleFirstNameChange}
+            required
+          />
+          {errors.firstName && (
+            <span className="error">Please enter your first name</span>
+          )}
+        </div>
 
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={handleLastNameChange}
-          required
-        />
-        <br />
-        {errors.lastName && (
-          <span className="error">Please enter your last name</span>
-        )}
+        <div className="form-group">
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={handleLastNameChange}
+            required
+          />
+          {errors.lastName && (
+            <span className="error">Please enter your last name</span>
+          )}
+        </div>
 
-        <input
-          type="text"
-          name="userName"
-          placeholder="Username"
-          value={userName}
-          onChange={handleUserNameChange}
-          required
-        />
-        <br />
-        {errors.userName && (
-          <span className="error">Please enter a username</span>
-        )}
+        <div className="form-group">
+          <input
+            type="text"
+            name="userName"
+            placeholder="Username"
+            value={userName}
+            onChange={handleUserNameChange}
+            required
+          />
+          {errors.userName && (
+            <span className="error">Please enter a username</span>
+          )}
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={email}
-          onChange={handleEmailChange}
-          required
-        />
-        <br />
-        {errors.email && (
-          <span className="error">Please enter a valid email address</span>
-        )}
+        <div className="form-group">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={email}
+            onChange={handleEmailChange}
+            required
+          />
+          {errors.email && (
+            <span className="error">Please enter a valid email address</span>
+          )}
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={password}
-          onChange={handlePasswordChange}
-          required
-        />
-        <br />
-        {errors.password && (
-          <span className="error">Please enter a password</span>
-        )}
+        <div className="form-group">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
+            required
+          />
+          {errors.password && (
+            <span className="error">Please enter a password</span>
+          )}
+        </div>
 
-        <button type="submit">Sign Up</button>
+        <button className="btn" type="submit">Sign Up</button>
       </form>
 
       {showConfirmation &&
         <p>Sign up successful! Redirecting...</p>}
     </div>
   );
+
 };
 
 export default withFirebase(SignUp);
