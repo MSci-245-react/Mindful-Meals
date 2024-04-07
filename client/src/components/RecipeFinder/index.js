@@ -4,11 +4,13 @@ import './recipeFinder.css';
 
 const serverURL = '';
 
+
 const RecipeFinder = () => {
   const [ingredientInput, setIngredientInput] = useState('');
   const [ingredientsArray, setIngredientsArray] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [savedRecipes, setSavedRecipes] = useState(() => {
+    // Retrieve saved recipes from localStorage or set to empty array
     const localData = localStorage.getItem('savedRecipes');
     return localData ? JSON.parse(localData) : [];
   });
@@ -16,73 +18,86 @@ const RecipeFinder = () => {
   const [dietaryRestrictionsArray, setDietaryRestrictionsArray] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const [allergensArray, setAllergensArray] = useState(() => {
+    try {
+      const serializedAllergens = localStorage.getItem('allergens');
+      if (serializedAllergens === null) {
+        return [];
+      }
+      return JSON.parse(serializedAllergens);
+    } catch (e) {
+      console.warn('Error loading allergens from localStorage:', e);
+      return []; // Return an empty array if an error occurs
+    }
+  });
+  const [showAllergensDropdown, setShowAllergensDropdown] = useState(false);
+  
 
   // Save savedRecipes to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
   }, [savedRecipes]);
 
+  useEffect(() => {
+    localStorage.setItem('allergens', JSON.stringify(allergensArray));
+  }, [allergensArray]);
+
+  
+
   const lastRowIndex = currentPage * itemsPerPage;
   const firstRowIndex = lastRowIndex - itemsPerPage;
   const currentRecipes = recipes.slice(firstRowIndex, lastRowIndex);
   const totalPages = Math.ceil(recipes.length / itemsPerPage);
 
-  const getRecipes = () => {
-    callApiGetRecipes().then(res => {
-      console.log('callApiFindRecipes returned: ', res);
-      const parsed = JSON.parse(res.express);
-      console.log('callApiFindRecipes parsed: ', parsed);
-      // filter the parsed recipes based on all ingredients
-      const filtered = filterRecipes(
-        parsed,
-        ingredientsArray,
-        dietaryRestrictionsArray,
-      );
-      setRecipes(filtered);
-    });
-  };
-
-  const callApiGetRecipes = async () => {
+  const getRecipes = async () => {
     const url = `${serverURL}/api/getRecipes`;
-    console.log(url);
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) throw Error(`HTTP error! status: ${response.status}`);
-    const body = await response.json();
-    console.log('User settings: ', body);
-    return body;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      const parsed = JSON.parse(result.express);
+      const filtered = filterRecipes(parsed);
+      setRecipes(filtered);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+    }
   };
 
-  const filterRecipes = (
-    recipes,
-    ingredientsArray,
-    dietaryRestrictionsArray,
-  ) => {
+
+  const Landing = () => {
+    const buttonContainerStyle = {
+      display: 'flex',
+      justifyContent: 'center',
+      // add other styles as needed
+    };
+  
+    return (
+      <div style={buttonContainerStyle}>
+        {/* content */}
+      </div>
+    );
+  };
+
+  const filterRecipes = (recipes) => {
     return recipes.filter(recipe => {
-      // Check for ingredients
       const recipeIngredientsLower = recipe.RecipeIngredientParts.toLowerCase();
-      const ingredientsMatch =
-        !Array.isArray(ingredientsArray) ||
-        ingredientsArray.length === 0 ||
-        ingredientsArray.every(ingredient =>
-          recipeIngredientsLower.includes(ingredient.toLowerCase()),
-        );
-
-      // Check for dietary restrictions
-      const recipeDietaryRestrictionsLower = recipe.Keywords.toLowerCase();
-      const dietaryRestrictionsMatch =
-        !Array.isArray(dietaryRestrictionsArray) ||
-        dietaryRestrictionsArray.length === 0 ||
-        dietaryRestrictionsArray.every(restriction =>
-          recipeDietaryRestrictionsLower.includes(restriction.toLowerCase()),
-        );
-
-      // Return true if both checks pass
-      return ingredientsMatch && dietaryRestrictionsMatch;
+      const containsAllergen = allergensArray.some(allergen => 
+        recipeIngredientsLower.includes(allergen.toLowerCase())
+      );
+      const ingredientsMatch = ingredientsArray.length === 0 || ingredientsArray.every(ingredient =>
+        recipeIngredientsLower.includes(ingredient.toLowerCase())
+      );
+      const dietaryRestrictionsMatch = dietaryRestrictionsArray.length === 0 || dietaryRestrictionsArray.every(restriction =>
+        recipe.Keywords.toLowerCase().includes(restriction.toLowerCase())
+      );
+      return ingredientsMatch && dietaryRestrictionsMatch && !containsAllergen;
     });
   };
 
@@ -105,22 +120,44 @@ const RecipeFinder = () => {
     const isAlreadySaved = savedRecipes.some(
       savedRecipe => savedRecipe.RecipeId === recipe.RecipeId,
     );
+
+  const handleSaveRecipe = (recipe) => {
+    const isAlreadySaved = savedRecipes.some(savedRecipe => savedRecipe.RecipeId === recipe.RecipeId);
     if (!isAlreadySaved) {
       const newSavedRecipes = [...savedRecipes, recipe];
       setSavedRecipes(newSavedRecipes);
-      // Additionally save to localStorage
-      localStorage.setItem('savedRecipes', JSON.stringify(newSavedRecipes));
     }
+  };
+
+  const toggleAllergensDropdown = () => {
+    setShowAllergensDropdown(prevState => !prevState); // Toggles the state
+};
+
+  // Add Allergen Function
+  const addAllergen = () => {
+    if (ingredientInput.trim() && !allergensArray.includes(ingredientInput)) {
+      setAllergensArray(prev => [...prev, ingredientInput]);
+      setIngredientInput('');
+    }
+  };
+  
+  const handleRemoveAllergen = (index) => {
+    setAllergensArray(prevAllergens => prevAllergens.filter((_, i) => i !== index));
   };
 
   const handleRemoveRecipe = recipeId => {
     const updatedSavedRecipes = savedRecipes.filter(
       recipe => recipe.RecipeId !== recipeId,
     );
+  
+  const handleRemoveRecipe = (recipeId) => {
+    const updatedSavedRecipes = savedRecipes.filter(recipe => recipe.RecipeId !== recipeId);
     setSavedRecipes(updatedSavedRecipes);
     localStorage.setItem('savedRecipes', JSON.stringify(updatedSavedRecipes));
   };
 
+    // No need to manually save to localStorage here since useEffect will handle it
+  };
   const handleToggleSavedRecipes = () => {
     setShowSavedRecipes(!showSavedRecipes);
   };
@@ -139,6 +176,26 @@ const RecipeFinder = () => {
   const clearIngredients = () => {
     setIngredientsArray([]);
     setIngredientInput('');
+  };
+
+  const saveAllergensToLocalStorage = (allergens) => {
+    try {
+      const serializedAllergens = JSON.stringify(allergens);
+      localStorage.setItem('allergens', serializedAllergens);
+    } catch (error) {
+      console.error('Error saving allergens to localStorage', error);
+    }
+  };
+  
+  // Load from localStorage
+  const loadAllergensFromLocalStorage = () => {
+    try {
+      const serializedAllergens = localStorage.getItem('allergens');
+      return serializedAllergens ? JSON.parse(serializedAllergens) : [];
+    } catch (error) {
+      console.error('Error loading allergens from localStorage', error);
+      return []; // Fallback to empty array in case of error
+    }
   };
 
   const clearRecipes = () => {
@@ -160,28 +217,53 @@ const RecipeFinder = () => {
   return (
     <div className="container">
       <div className="heading-text">Search for Recipes</div>
+      
       <div className="ingredient-input">
         <input
           type="text"
           id="text-input"
           placeholder="Enter Ingredients"
-          value={ingredientInput} // Changed to use ingredientInput
+          value={ingredientInput}
           onChange={handleIngredientChange}
         />
-        <button onClick={addIngredient}>Add</button>{' '}
+        <button onClick={addIngredient}>Add</button>
         <button onClick={clearIngredients}>Clear</button>
+        <button onClick={() => addAllergen(ingredientInput)}>Add as Allergen</button>
       </div>
-      {/* Display added ingredients */}
+    
       <div className="subheading-text">Added Ingredients</div>
-      <div className="ingredients-list">
-        {ingredientsArray.map((ingredient, index) => (
-          <div key={index} className="ingredient-box">
-            {ingredient}
-          </div>
-        ))}
-      </div>
+    <div className="ingredients-list">
+      {ingredientsArray.map((ingredient, index) => (
+        <div key={index} className="ingredient-box">
+          {ingredient}
+        </div>
+      ))}
+    </div>
+    
       <div className="subheading-text">Dietary Restrictions</div>
       <div className="dietary-restrictions">
+        {/* ... (Dietary restrictions checkboxes) */}
+
+ {/* Allergens Button and Dropdown */}
+<div className="allergens-section">
+  <button className="allergens-dropdown-btn" onClick={toggleAllergensDropdown}>
+    Allergens
+  </button>
+  {showAllergensDropdown && (
+    <div className="allergens-dropdown-content">
+      {allergensArray.map((allergen, index) => (
+        <div key={index} className="allergen-item">
+          {allergen}
+          <button className="allergen-remove-btn" onClick={() => handleRemoveAllergen(index)}>
+            &times;
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+
         <label>
           <input
             type="checkbox"
@@ -214,6 +296,7 @@ const RecipeFinder = () => {
           {showSavedRecipes ? 'Hide Saved' : 'Show Saved'} Recipes
         </button>
       </div>
+      
 
       {showSavedRecipes && (
         <div>
@@ -273,4 +356,6 @@ const RecipeFinder = () => {
     </div>
   );
 };
+
+  }
 export default RecipeFinder;

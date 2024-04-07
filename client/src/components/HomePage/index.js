@@ -8,8 +8,6 @@ import PrivateRoute from '../Navigation/PrivateRoute';
 const Landing = ({ authenticated }) => {
   const navigate = useNavigate();
 
-  
-
   const containerStyle = {
     height: '100vh',
     background: `url(${backgroundImage}) no-repeat center center fixed`,
