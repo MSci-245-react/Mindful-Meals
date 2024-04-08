@@ -158,7 +158,7 @@ const RecipeFinder = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container_recipe">
       <div className="heading-text">Search for Recipes</div>
       <div className="ingredient-input">
         <input

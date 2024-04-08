@@ -69,7 +69,7 @@ const NavigationBar = ({ authenticated }) => {
     <li>
       <Link
         component={RouterLink}
-        to="Profile"
+        to="/Profile"
         style={{ textDecoration: 'none', color: '#fff' }}
       >
         Profile
