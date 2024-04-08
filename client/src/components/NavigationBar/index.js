@@ -10,7 +10,7 @@ import { withFirebase } from '../Firebase';
 import { useNavigate } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-
+import FeaturedRecipes from '../FeaturedRecipes';
 
 const NavigationBar = ({ authenticated }) => {
   const { cartItems } = useContext(CartContext);
@@ -73,6 +73,18 @@ const NavigationBar = ({ authenticated }) => {
         style={{ textDecoration: 'none', color: '#fff' }}
       >
         Profile
+      </Link>
+    </li>
+  ) : null;
+
+  const renderFeaturedRecipesLink = authenticated ? (
+    <li> 
+      <Link
+        component={RouterLink}
+        to="/FeaturedRecipes"
+        style={{ textDecoration: 'none', color: '#fff' }}
+      >
+        Featured Recipes
       </Link>
     </li>
   ) : null;
@@ -158,6 +170,7 @@ const NavigationBar = ({ authenticated }) => {
             {renderNutritionalLink}
             {renderReceipesLink}
             {renderGroceriesLink}
+            {renderFeaturedRecipesLink}
           </ul>
           {isCartOpen && <CartDropdown />}
           {renderProfileLink}
