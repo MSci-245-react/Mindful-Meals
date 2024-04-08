@@ -1,0 +1,25 @@
+.featured-recipes-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .recipes-list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  .recipe-card {
+    width: 300px;
+    margin: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .recipe-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  

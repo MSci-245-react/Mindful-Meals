@@ -24,6 +24,12 @@ const RecipeFinder = ({firebase}) => {
   const currentRecipes = recipes.slice(firstRowIndex, lastRowIndex);
   const totalPages = Math.ceil(recipes.length / itemsPerPage);
 
+  const [allergensArray, setAllergensArray] = useState(() => {
+    const savedAllergens = localStorage.getItem('allergens');
+    return savedAllergens ? JSON.parse(savedAllergens) : [];
+  });
+  const [showAllergensDropdown, setShowAllergensDropdown] = useState(false);
+
   const getRecipes = () => {
     callApiGetRecipes().then(res => {
       console.log('callApiFindRecipes returned: ', res);
@@ -35,10 +41,31 @@ const RecipeFinder = ({firebase}) => {
         ingredientsArray,
         dietaryRestrictionsArray,
         userAllergiesArray,
+        allergensArray
       );
       setRecipes(filtered);
     });
   };
+
+  useEffect(() => {
+    localStorage.setItem('allergens', JSON.stringify(allergensArray));
+  }, [allergensArray]);
+ 
+
+  useEffect(() => {
+    try {
+      const savedAllergens = localStorage.getItem('allergens');
+      if (savedAllergens) {
+        setAllergensArray(JSON.parse(savedAllergens));
+      }
+    } catch (error) {
+      console.error('Failed to parse allergens from localStorage:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('allergens', JSON.stringify(allergensArray));
+  }, [allergensArray]);
 
   const callApiGetRecipes = async () => {
     const url = `${serverURL}/api/getRecipes`;
@@ -60,6 +87,7 @@ const RecipeFinder = ({firebase}) => {
     ingredientsArray,
     dietaryRestrictionsArray,
     userAllergiesArray,
+    allergensArray,
   ) => {
     return recipes.filter(recipe => {
       // Check for ingredients
@@ -81,12 +109,11 @@ const RecipeFinder = ({firebase}) => {
         );
 
       // Check for allergies
-      const allergensMatch =
-        !Array.isArray(userAllergiesArray) ||
-        userAllergiesArray.length === 0 ||
-        !userAllergiesArray.some(allergen =>
-          recipeIngredientsLower.includes(allergen.toLowerCase()),
-        );
+
+      const allergensMatch = !allergensArray.some(allergen =>
+        recipeIngredientsLower.includes(allergen.toLowerCase()),
+      );
+        
 
       // Return true if all conditions pass
       return ingredientsMatch && dietaryRestrictionsMatch && allergensMatch;
@@ -171,14 +198,47 @@ const RecipeFinder = ({firebase}) => {
   };
 
   const allergyStringToArray = userAllergiesString => {
+    // Check if userAllergiesString is null or undefined and handle it
+    if (!userAllergiesString) {
+      // If userAllergiesString is falsy (including empty string, null, or undefined),
+      // set an empty array and return early to avoid further processing.
+      setUserAllergiesArray([]);
+      return;
+    }
+  
     const resultArray = userAllergiesString.split(',');
     const trimmedArray = resultArray.map(element => element.trim());
     setUserAllergiesArray(trimmedArray);
   };
-
+  
   useEffect(() => {
     allergyStringToArray(userAllergiesString);
   }, [userAllergiesString]);
+
+  const addAllergen = (allergen) => {
+    if (allergen.trim() && !allergensArray.includes(allergen)) {
+      const newAllergens = [...allergensArray, allergen];
+      setAllergensArray(newAllergens);
+      // localStorage will be updated automatically by the useEffect above
+    }
+  };
+
+  // This function is to be used in the button that adds allergens
+  const handleAddAsAllergen = () => {
+    addAllergen(ingredientInput);
+    setIngredientInput(''); // Clear the input after adding to allergens
+  };
+
+  const toggleAllergensDropdown = () => {
+    // This function should toggle the visibility of the allergens dropdown
+    setShowAllergensDropdown(!showAllergensDropdown);
+  };
+
+  const handleRemoveAllergen = (index) => {
+    const newAllergens = [...allergensArray];
+    newAllergens.splice(index, 1);
+    setAllergensArray(newAllergens);
+  };
 
   const handleIngredientChange = e => {
     setIngredientInput(e.target.value);
@@ -221,6 +281,7 @@ const RecipeFinder = ({firebase}) => {
         />
         <button onClick={addIngredient}>Add</button>{' '}
         <button onClick={clearIngredients}>Clear</button>
+        <button onClick={handleAddAsAllergen}>Do not add</button>
       </div>
       {/* Display added ingredients */}
       <div className="subheading-text">Added Ingredients</div>
@@ -230,6 +291,24 @@ const RecipeFinder = ({firebase}) => {
             {ingredient}
           </div>
         ))}
+        {/* Allergens dropdown and button */}
+<div className="allergens-section">
+        <button onClick={toggleAllergensDropdown}>
+          {showAllergensDropdown ? 'Ingredients to not add' : 'Ingredients to not add'}
+        </button>
+        {showAllergensDropdown && (
+          <div className="allergens-dropdown-content">
+            {allergensArray.map((allergen, index) => (
+              <div key={index} className="allergen-item">
+                {allergen}
+                <button onClick={() => handleRemoveAllergen(index)}>
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       </div>
       <div className="subheading-text">Dietary Restrictions</div>
       <div className="dietary-restrictions">

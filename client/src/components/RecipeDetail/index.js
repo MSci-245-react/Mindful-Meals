@@ -178,6 +178,8 @@ const RecipeDetail = ({firebase}) => {
 
   const handleSubmit = e => {
     sendReview();
+    setreviewTitle('');
+    setreviewBody('');
   };
 
   return (
@@ -210,6 +212,7 @@ const RecipeDetail = ({firebase}) => {
               <input
                 type="text"
                 id="text-input"
+                className="review-title"
                 placeholder="Enter Review Title"
                 value={reviewTitle}
                 onChange={handleReviewTitleChange}

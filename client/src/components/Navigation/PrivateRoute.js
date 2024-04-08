@@ -11,6 +11,7 @@ import CartPage from '../CartPage';
 import NavigationBar from '../NavigationBar';
 import SignOut from '../SignOut';
 import ProfilePage from '../Profilepage';
+import FeaturedRecipes from '../FeaturedRecipes';
 
 const PrivateRoute = ({ authenticated }) => {
   return (
@@ -28,6 +29,7 @@ const PrivateRoute = ({ authenticated }) => {
         <Route path="/recipe/:RecipeId" element={<RecipeDetail />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/Profile" element={<ProfilePage />} />
+        <Route path="/FeaturedRecipes" element={<FeaturedRecipes />} />
       </Routes>
     </React.Fragment >
   );

@@ -67,29 +67,6 @@ td {
   font-size: 14px;
 }
 
-.ingredient-input > button,
-.recipe-buttons > button,
-.allergens-button {
-  .recipe-buttons > button {
-    background-color: transparent;
-    color: #5cb85c; /* Green text color for buttons */
-    border: 1px solid #5cb85c;
-    margin: 0 5px;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.2s ease;
-  }
-
-  .recipe-buttons > button:hover {
-    background-color: #449d44;
-    color: white; /* White text color on hover */
-  }
-}
-
 .recipe-buttons button {
   width: 400px;
   margin: 0 auto;
