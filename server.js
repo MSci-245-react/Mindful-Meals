@@ -142,6 +142,23 @@ app.post('/api/addReview', (req, res) => {
   connection.end();
 });
 
+app.post('/api/addSavedRecipe', (req, res) => {
+  const {recipeId, userId, userName, recipeName} = req.body;
+  const connection = mysql.createConnection(config);
+  const sql = `INSERT INTO savedRecipes (recipeId, userId, userName, recipeName) VALUES (?, ?, ?, ?)`;
+  const data = [recipeId, userId, userName, recipeName];
+
+  connection.query(sql, data, (error, results, fields) => {
+    if (error) {
+      console.error('Error adding review:', error.message);
+      res.status(500).json({error: 'Error adding review to the database'});
+    } else {
+      res.status(200).json({success: true});
+    }
+    connection.end(); // Close the connection here
+  });
+});
+
 app.post('/api/getUserData', (req, res) => {
   let connection = mysql.createConnection(config);
   const userEmail = req.body.email;
