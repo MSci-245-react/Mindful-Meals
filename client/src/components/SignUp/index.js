@@ -159,84 +159,8 @@ const SignUp = ({ firebase }) => {
     }
   };
 
-  // return (
-  //   <div className="container">
-  //     <h1>Sign Up</h1>
-  //     <form onSubmit={handleSubmit}>
-  //       <input
-  //         type="text"
-  //         name="firstName"
-  //         placeholder="First Name"
-  //         value={firstName}
-  //         onChange={handleFirstNameChange}
-  //         required
-  //       />
-  //       <br />
-  //       {errors.firstName && (
-  //         <span className="error">Please enter your first name</span>
-  //       )}
-
-  //       <input
-  //         type="text"
-  //         name="lastName"
-  //         placeholder="Last Name"
-  //         value={lastName}
-  //         onChange={handleLastNameChange}
-  //         required
-  //       />
-  //       <br />
-  //       {errors.lastName && (
-  //         <span className="error">Please enter your last name</span>
-  //       )}
-
-  //       <input
-  //         type="text"
-  //         name="userName"
-  //         placeholder="Username"
-  //         value={userName}
-  //         onChange={handleUserNameChange}
-  //         required
-  //       />
-  //       <br />
-  //       {errors.userName && (
-  //         <span className="error">Please enter a username</span>
-  //       )}
-
-  //       <input
-  //         type="email"
-  //         name="email"
-  //         placeholder="Email"
-  //         value={email}
-  //         onChange={handleEmailChange}
-  //         required
-  //       />
-  //       <br />
-  //       {errors.email && (
-  //         <span className="error">Please enter a valid email address</span>
-  //       )}
-
-  //       <input
-  //         type="password"
-  //         name="password"
-  //         placeholder="Password"
-  //         value={password}
-  //         onChange={handlePasswordChange}
-  //         required
-  //       />
-  //       <br />
-  //       {errors.password && (
-  //         <span className="error">Please enter a password</span>
-  //       )}
-
-  //       <button type="submit">Sign Up</button>
-  //     </form>
-
-  //     {showConfirmation &&
-  //       <p>Sign up successful! Redirecting...</p>}
-  //   </div>
-  // );
   return (
-    <div className="container">
+    <div className="container_s">
       <h1>Sign Up</h1>
       <form className="form" onSubmit={handleSubmit}>
         <div className="form-group">
