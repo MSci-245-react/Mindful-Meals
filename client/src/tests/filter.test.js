@@ -2,6 +2,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import NutritionalInformation from '../components/NutritionalInformation';
 
+jest.mock('../components/Firebase', () => ({
+  withFirebase: Component => props => <Component {...props} firebase={{ auth: { currentUser: { email: 'test@test.ca' } } }} />
+}));
+
 // Mock the server response
 const mockData = [
   {
@@ -17,9 +21,9 @@ const mockData = [
     'Calcium_(mg)': '24',
     'Iron_(mg)': '0.02',
     'Vit_C_(mg)': '0'
-    
+
   }
-  
+
 ];
 
 beforeEach(() => {
@@ -43,6 +47,6 @@ describe('NutritionalInformation', () => {
     fireEvent.change(screen.getByPlaceholderText(/search ingredients.../i), {
       target: { value: 'Butter' }
     });
- 
+
   });
 });

@@ -1,11 +1,15 @@
 import React from 'react';
-import {render, screen} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import SignUp from '../components/SignUp';
 
+jest.mock('../components/Firebase', () => ({
+    withFirebase: Component => props => <Component {...props} firebase={{ auth: { currentUser: { email: 'test@test.ca' } } }} />
+}));
+
 // This jest tests if all the relevant textboxes are there
-describe('SignUp', ()=> {
+describe('SignUp', () => {
     test('renders sign up form', () => {
 
         render(<SignUp />);
