@@ -66,14 +66,33 @@ td {
   font-size: 14px;
 }
 
-.recipe-buttons {
-  display: flex;
+
+
+.ingredient-input > button, 
+.recipe-buttons > button,
+.allergens-button {
+  .recipe-buttons > button {
+    background-color: transparent;
+    color: #5cb85c; /* Green text color for buttons */
+    border: 1px solid #5cb85c;
+    margin: 0 5px;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
   flex-direction: column;
   align-items: center;
+    transition: all 0.2s ease;
+  }
+  
+  .recipe-buttons > button:hover {
+    background-color: #449d44;
+    color: white; /* White text color on hover */
+  }
 }
 
 .recipe-buttons button {
-  width: 400px; 
+  width: 400px;
   margin: 0 auto;
   padding: 5px;
 }
@@ -95,85 +114,182 @@ td {
 
 .ingredient-box {
   padding: 5px 10px;
-  border: 1px solid #ccc; /* Light gray border */
-  border-radius: 5px; /* Rounded corners */
-  background-color: #f0f0f0; /* Light gray background */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background-color: #f7f7f7;
+  margin-right: 10px;
+  cursor: default;
+  margin-bottom: 10px;
+}
+
+.allergen-pill {
+  display: flex;
+  justify-content: space-between; /* Align items to opposite ends */
+  align-items: center; /* Vertically align items */
+  padding: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #ddd; /* Add a border to separate items */
+}
+
+.remove-x {
+  color: red; /* Change the color of the 'x' to red */
+  margin-left: 10px; /* Add space between the ingredient name and the 'x' */
+  cursor: pointer; /* Indicates that the 'x' is clickable */
+}
+
+.remove-x:hover {
+  color: darkred; /* Darker red on hover for visual feedback */
 }
 
 .allergens-section {
-  position: relative; 
+  position: relative;
   text-align: center;
-  margin-bottom: 20px;  
+  margin-bottom: 20px;
 }
 
+/* Styling for the allergen button to match the dropdown width */
 .allergens-dropdown-btn {
   padding: 10px;
-  background-color: #f9f9f9; 
-  color: #333; 
-  border: 1px solid #ccc; 
+  background-color: #f9f9f9;
+  color: #333;
+  border: 1px solid #ccc;
   cursor: pointer;
   outline: none;
-
 }
-
 .allergens-dropdown-content {
-  display: none; 
+  display: none;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   padding: 10px;
   border-radius: 5px;
-  top: 100%;  
-  margin-top: 2px; 
+  top: 100%;
+  margin-top: 2px;
 }
 
+.allergen-item {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space between ingredient name and 'x' */
+  align-items: center; /* Align items vertically */
+  padding: 5px; /* Add padding as needed */
+  margin-bottom: 5px; /* Space between each allergen item */
+}
+
+.allergen-name {
+  flex-grow: 1; /* Allows the ingredient name to fill the space */
+  white-space: nowrap; /* Prevents the text from wrapping */
+}
+
+/* Ensure the dropdown is displayed when the allergens button is active */
 .show-dropdown {
   display: block;
 }
 
 .allergen-pill {
-  display: flex; 
-  align-items: center; 
-  margin: 5px 0; 
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
 }
 
 .allergen-remove-btn {
-  margin-left: 10px; 
+  margin-left: 10px;
   background-color: transparent;
   border: none;
   cursor: pointer;
-  color: #155724;
+  color: #d32f2f; /* Red color for the 'x' */
+  margin-left: 10px; /* Space to the left of the 'x' */
 }
 
-.allergen-remove-btn:hover {
-  color: #28a745;
+.remove-x:hover {
+  color: #9a0007; /* Darker red on hover for feedback */
 }
 
-.saved-recipe-list {
-  list-style: none; /* Removes the bullet points */
-  padding: 0; /* Removes default padding */
-  margin: 0; /* Removes default margin */
+/* Increase the width of the dropdown to fit the content */
+.dropdown-menu {
+  min-width: 150px; /* Minimum width of the dropdown */
+  width: calc(100% - 20px); /* 100% of the parent width minus padding */
+  max-width: 300px; /* Maximum width to ensure it doesn't get too wide */
 }
 
-/* Style individual saved recipe items */
+
+.dropdown-item:hover {
+  background-color: #f7f7f7;
+}
+
+/* Pagination and recipe buttons styling */
+.pagination, 
+.recipe-buttons {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: transparent;
+  color: #5cb85c;
+  border: 1px solid #5cb85c;
+  margin: 0 5px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+  background-color: #5cb85c;
+  color: white;
+}
+
+.pagination button:disabled {
+  color: #bbb;
+  border-color: #bbb;
+  cursor: not-allowed;
+}
+
+/* Adjustments for dietary restrictions checkbox alignment */
+.dietary-restrictions label {
+  margin: 0 10px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* Improved input styling */
+input[type="text"] {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  width: calc(100% - 225px); /* Adjust the width as needed */
+  margin-right: 10px;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+}
+
 .saved-recipe-item {
-  display: flex; /* Aligns items in a flex row */
-  justify-content: space-between; /* Ensures equal spacing between elements */
-  align-items: center; /* Aligns items vertically */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px; /* Add space between items */
 }
 
-/* Modify the .recipe-name class if it's being used */
-.recipe-name {
-  flex-grow: 1; /* Allows the recipe name to expand */
+.view-remove-button {
+  margin-left: 5px;
+  padding: 5px 10px;
+  background-color: #f0f0f0; /* Light background color */
+  border: 1px solid #ccc; /* Add border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Indicates that the element is clickable */
+  text-decoration: none; /* No underline for text */
+  color: #333; /* Text color */
 }
 
 /* Style for the 'View' link */
-.view-button, .remove-button {
+.view-button,
+.remove-button {
   padding: 5px 10px; /* Adjust padding to your preference */
   margin-left: 10px; /* Creates space to the left of the buttons */
   text-decoration: none; /* Removes underline from the links */
@@ -184,3 +300,8 @@ td {
   background-color: transparent; /* Ensures no background color is affecting the view */
   cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
 }
+.button-container {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
