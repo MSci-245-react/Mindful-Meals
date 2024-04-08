@@ -17,7 +17,7 @@ describe('RecipeDetail Component', () => {
     jest.restoreAllMocks();
   });
 
-  test('Checks if review inputs are sent to the DB', async () => {
+  test('Checks if review inputs are sent to the database', async () => {
     render(<RecipeDetail />);
 
     const title = screen.getByPlaceholderText('Enter Review Title');
