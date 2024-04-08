@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { withFirebase } from '../Firebase';
 import { useNavigate } from 'react-router-dom';
+import './SignIn.css';
 
 
 const SignIn = ({ firebase }) => {
@@ -43,7 +44,7 @@ const SignIn = ({ firebase }) => {
   };
 
   return (
-    <div className='container'>
+    <div className='container_si'>
       <h1>Sign In</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -66,8 +67,7 @@ const SignIn = ({ firebase }) => {
         <br />
         <button type="submit">Sign In</button>
       </form>
-      {error && <p>{error.message}</p>}
-      {loggedIn && <p>Sign In Successful!</p>}
+      {error && <p className="error">{error.message}</p>}
     </div>
   );
 
