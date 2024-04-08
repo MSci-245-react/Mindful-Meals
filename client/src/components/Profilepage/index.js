@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { withFirebase } from '../Firebase';
+import React, {useState, useEffect} from 'react';
+import {withFirebase} from '../Firebase';
 import './Profilepage.css';
+import {Link} from 'react-router-dom';
 import defaultProfilePic from './profile-pic.png';
 
-const ProfilePage = ({ firebase }) => {
+const ProfilePage = ({firebase}) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingBio, setEditingBio] = useState(false);
@@ -29,8 +30,8 @@ const ProfilePage = ({ firebase }) => {
             setSelectedRestrictions(
               profileData.dietaryRestrictions
                 ? profileData.dietaryRestrictions
-                  .split(',')
-                  .map(str => str.trim())
+                    .split(',')
+                    .map(str => str.trim())
                 : [],
             );
             setSelectedAllergies(
@@ -64,7 +65,7 @@ const ProfilePage = ({ firebase }) => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email: user.email }),
+            body: JSON.stringify({email: user.email}),
           });
 
           if (response.ok) {
@@ -216,7 +217,7 @@ const ProfilePage = ({ firebase }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({userId}),
       });
 
       if (response.ok) {
@@ -252,20 +253,30 @@ const ProfilePage = ({ firebase }) => {
         />
       </div>
       <div className="profile-section">
-        <button className="show-saved-button" onClick={fetchSavedRecipes}>Show Saved Recipes</button>
+        <button className="show-saved-button" onClick={fetchSavedRecipes}>
+          Show Saved Recipes
+        </button>
       </div>
-      <div style={{
-        position: 'absolute',
-        top: '610px',
-        right: '200px',
-        width: '300px',
-        height: '300px',
-      }} >
-        {loadingRecipes ? <div>Loading saved recipes...</div> : (
+      <div
+        style={{
+          position: 'absolute',
+          top: '610px',
+          right: '200px',
+          width: '300px',
+          height: '300px',
+        }}
+      >
+        {loadingRecipes ? (
+          <div>Loading saved recipes...</div>
+        ) : (
           <>
             <ul>
               {savedRecipes.map((recipe, index) => (
-                <li key={index}>{recipe.recipeName}</li>
+                <li key={index}>
+                  <Link to={`/recipe/${recipe.recipeId}`}>
+                    {recipe.recipeName}
+                  </Link>
+                </li>
               ))}
             </ul>
           </>
@@ -314,7 +325,8 @@ const ProfilePage = ({ firebase }) => {
           </button>
           <button
             className={
-              selectedRestrictions.includes('vegetarian') ? 'selected' : ''}
+              selectedRestrictions.includes('vegetarian') ? 'selected' : ''
+            }
             onClick={() => toggleSelectedRestriction('vegetarian')}
           >
             Vegetarian
@@ -366,12 +378,10 @@ const ProfilePage = ({ firebase }) => {
         <button onClick={handleAllergySave}>Save Allergies</button>
       </div>
 
-      {
-        successMessage && (
-          <div className="success-message">{successMessage}</div>
-        )
-      }
-    </div >
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
+    </div>
   );
 };
 
