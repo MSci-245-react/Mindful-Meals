@@ -34,6 +34,7 @@ const RecipeFinder = ({firebase}) => {
         parsed,
         ingredientsArray,
         dietaryRestrictionsArray,
+        userAllergiesArray,
       );
       setRecipes(filtered);
     });
@@ -231,11 +232,6 @@ const RecipeFinder = ({firebase}) => {
         ))}
       </div>
       <div className="subheading-text">Dietary Restrictions</div>
-      <ul>
-        {userAllergiesArray.map((allergen, index) => (
-          <li key={index}>{allergen}</li>
-        ))}
-      </ul>
       <div className="dietary-restrictions">
         <label>
           <input
