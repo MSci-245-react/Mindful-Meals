@@ -1,33 +1,38 @@
 import React from 'react';
-import SignUp from '../SignUp';
-import SignIn from '../SignIn';
-import HomePage from '../HomePage';
-import Profilepage from '../Profilepage'
-import NutritionalInformation from '../NutritionalInformation';
-import RecipeFinder from '../RecipeFinder';
-import RecipeDetail from '../RecipeDetail';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import NavigationBar from '../NavigationBar';
+import CartProvider from '../Cart';
+import {FirebaseContext} from '../Firebase';
+import {useState, useContext, useEffect} from 'react';
+import PrivateRoute from '../Navigation/PrivateRoute';
 
 function App() {
+  const [authUser, setAuthUser] = useState(null);
+  const firebase = useContext(FirebaseContext);
+
+  useEffect(() => {
+    if (firebase) {
+      const listener = firebase.auth.onAuthStateChanged(user => {
+        if (user) {
+          setAuthUser(user);
+        } else {
+          setAuthUser(null);
+        }
+      });
+
+      // Cleanup function
+      return () => listener();
+    }
+  }, [firebase]);
+
+  // Determine authentication status based on authUser's presence
+  const authenticated = !!authUser;
+
   return (
-    <div>
+    <CartProvider>
       <Router>
-        <NavigationBar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/Signup" element={<SignUp />} />
-          <Route path="/RecipeFinder" element={<RecipeFinder />} />
-          <Route path="/SignIn" element={<SignIn />} />
-          <Route path="/Profilepage" element={<Profilepage />} />
-          <Route
-            path="/NutritionalInformation"
-            element={<NutritionalInformation />}
-          />
-          <Route path="/recipe/:RecipeId" element={<RecipeDetail />} />
-        </Routes>
+        <PrivateRoute authUser={authUser} authenticated={authenticated} />
       </Router>
-    </div>
+    </CartProvider>
   );
 }
 

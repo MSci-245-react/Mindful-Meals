@@ -1,12 +1,15 @@
-.container {
-  max-width: 400px;
+
+ .container_s {
+  max-width: 700px;
   margin: 0 auto;
-  margin-top: 200px;
+  margin-top: 150px;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .form {
@@ -16,30 +19,31 @@ h1 {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
+.form input,
+.form button {
+  margin-bottom: 10px;
+}
 .form-group {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column; /* Align items vertically */
-  align-items: center;
+  text-align: center;
 }
 
 input[type='text'],
 input[type='email'],
-input[type='password'] {
+input[type='password'],
+.btn {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  justify-content: center;
+  align-items: center;
+  margin-right: 300px;
 }
 
 .btn {
-  display: block;
-  width: 100%;
-  padding: 10px;
   background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
