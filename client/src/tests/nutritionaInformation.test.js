@@ -14,7 +14,7 @@ jest.mock('../components/Firebase', () => ({
 const mockCartContextValue = {
   addToCart: jest.fn(), // Mock function for addToCart
   // Add other context values if there are any
-};
+}; 
 
 describe('Nutritional Information Component', () => {
   test('should contain the appropriate headings in the chart', () => {
