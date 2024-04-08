@@ -267,6 +267,5 @@ const RecipeFinder = () => {
       )}
     </div>
   );
-
 }
 export default RecipeFinder;
