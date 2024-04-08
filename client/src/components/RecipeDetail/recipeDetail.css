@@ -18,11 +18,54 @@
 }
 
 .review-body {
-  width: 100%;
+  width: 80%;
+  height: auto;
+  min-width: 300px; /* Ensures that the container does not get too small */
+  margin: auto;
+  padding: 20px;
 }
 
 .submit-button {
-  width: 400px; /* Example width; adjust as needed */
-  align-items: center;
-  padding: 5px;
+  width: 400px;
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.review-box {
+  border: 1px solid #ccc; /* Adds a light grey border around each review box */
+  padding: 20px; /* Adds space inside each box */
+  margin-bottom: 20px; /* Space between each review box */
+  background-color: #f9f9f9; /* Light grey background for the box */
+  border-radius: 10px; /* Rounded corners for the box */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.review-box p {
+  /* Adds vertical space between paragraphs */
+  line-height: 1.5; /* Increases line height for readability */
+  color: #333; /* Dark grey color for text */
+}
+
+.review-box p:first-child {
+  font-weight: bold; /* Makes the title bold */
+  font-size: 1.2em; /* Larger font size for the title */
+}
+
+.review-box p:nth-child(2) {
+  font-style: italic; /* Italicizes the review body */
+  color: #555; /* Slightly lighter text color for the body */
+}
+
+.review-box p:nth-child(3) {
+  background-color: #e0e0e0; /* Background color for the rating */
+  border-radius: 5px; /* Rounded corners for the rating background */
+  padding: 3px 10px; /* Padding inside the rating background */
+  display: inline-block; /* Makes the rating a small block element */ /* Space below the rating */
+}
+
+.review-box p:nth-child(4) {
+  font-size: 0.9em; /* Smaller font size for the user name */
+  text-align: right; /* Aligns the user name to the right */
+  color: #666; /* Dark gray for user name */
 }

@@ -1,9 +1,10 @@
 .container_recipe {
   max-width: 500px;
   margin: 0 auto;
-  margin-top: 80px;
+  margin-top: 100px;
   width: 800px;
   font-family: 'Poppins', sans-serif;
+  padding-top: 100px;
 }
 
 .heading-text {
@@ -50,7 +51,7 @@ th {
 }
 
 thead {
-  background-color: #f4f4f4; 
+  background-color: #f4f4f4; /* Light gray background */
 }
 
 table {
@@ -61,14 +62,12 @@ table {
 
 th,
 td {
-  border: 1px solid #ddd; 
+  border: 1px solid #ddd; /* Light gray border */
   padding: 8px;
   font-size: 14px;
 }
 
-
-
-.ingredient-input > button, 
+.ingredient-input > button,
 .recipe-buttons > button,
 .allergens-button {
   .recipe-buttons > button {
@@ -80,11 +79,11 @@ td {
     border-radius: 4px;
     cursor: pointer;
     display: flex;
-  flex-direction: column;
-  align-items: center;
+    flex-direction: column;
+    align-items: center;
     transition: all 0.2s ease;
   }
-  
+
   .recipe-buttons > button:hover {
     background-color: #449d44;
     color: white; /* White text color on hover */
@@ -157,18 +156,22 @@ td {
   outline: none;
 }
 .allergens-dropdown-content {
-  display: none;
+  display: block;
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   padding: 10px;
   border-radius: 5px;
-  top: 100%;
-  margin-top: 2px;
+  top: 100%; /* Position below the button */
+  left: 50%; /* Center it under the button */
+  transform: translateX(-50%);
+}
+
+/* This class is added when the Allergens button is clicked */
+.show-dropdown {
+  display: block;
 }
 
 .allergen-item {
@@ -182,11 +185,6 @@ td {
 .allergen-name {
   flex-grow: 1; /* Allows the ingredient name to fill the space */
   white-space: nowrap; /* Prevents the text from wrapping */
-}
-
-/* Ensure the dropdown is displayed when the allergens button is active */
-.show-dropdown {
-  display: block;
 }
 
 .allergen-pill {
@@ -215,13 +213,12 @@ td {
   max-width: 300px; /* Maximum width to ensure it doesn't get too wide */
 }
 
-
 .dropdown-item:hover {
   background-color: #f7f7f7;
 }
 
 /* Pagination and recipe buttons styling */
-.pagination, 
+.pagination,
 .recipe-buttons {
   text-align: center;
   margin-top: 20px;
@@ -257,7 +254,7 @@ td {
 }
 
 /* Improved input styling */
-input[type="text"] {
+input[type='text'] {
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 10px;
@@ -265,7 +262,7 @@ input[type="text"] {
   margin-right: 10px;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   margin-right: 5px;
 }
 
@@ -304,4 +301,3 @@ input[type="checkbox"] {
   display: flex;
   gap: 10px; /* Space between buttons */
 }
-

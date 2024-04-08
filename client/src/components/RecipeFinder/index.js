@@ -16,11 +16,35 @@ const RecipeFinder = () => {
   const [dietaryRestrictionsArray, setDietaryRestrictionsArray] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const [allergensArray, setAllergensArray] = useState(() => {
+    const savedAllergens = localStorage.getItem('allergens');
+    return savedAllergens ? JSON.parse(savedAllergens) : [];
+  });
+  const [showAllergensDropdown, setShowAllergensDropdown] = useState(false);
 
   // Save savedRecipes to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
   }, [savedRecipes]);
+
+  useEffect(() => {
+    localStorage.setItem('allergens', JSON.stringify(allergensArray));
+  }, [allergensArray]);
+
+  useEffect(() => {
+    try {
+      const savedAllergens = localStorage.getItem('allergens');
+      if (savedAllergens) {
+        setAllergensArray(JSON.parse(savedAllergens));
+      }
+    } catch (error) {
+      console.error('Failed to parse allergens from localStorage:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('allergens', JSON.stringify(allergensArray));
+  }, [allergensArray]);
 
   const lastRowIndex = currentPage * itemsPerPage;
   const firstRowIndex = lastRowIndex - itemsPerPage;
@@ -37,6 +61,7 @@ const RecipeFinder = () => {
         parsed,
         ingredientsArray,
         dietaryRestrictionsArray,
+        allergensArray,
       );
       setRecipes(filtered);
     });
@@ -61,6 +86,7 @@ const RecipeFinder = () => {
     recipes,
     ingredientsArray,
     dietaryRestrictionsArray,
+    allergensArray,
   ) => {
     return recipes.filter(recipe => {
       // Check for ingredients
@@ -81,8 +107,11 @@ const RecipeFinder = () => {
           recipeDietaryRestrictionsLower.includes(restriction.toLowerCase()),
         );
 
-      // Return true if both checks pass
-      return ingredientsMatch && dietaryRestrictionsMatch;
+      const allergensMatch = !allergensArray.some(allergen =>
+        recipeIngredientsLower.includes(allergen.toLowerCase()),
+      );
+
+      return ingredientsMatch && dietaryRestrictionsMatch && allergensMatch;
     });
   };
 
@@ -111,6 +140,31 @@ const RecipeFinder = () => {
       // Additionally save to localStorage
       localStorage.setItem('savedRecipes', JSON.stringify(newSavedRecipes));
     }
+  };
+
+  const addAllergen = allergen => {
+    if (allergen.trim() && !allergensArray.includes(allergen)) {
+      const newAllergens = [...allergensArray, allergen];
+      setAllergensArray(newAllergens);
+      // localStorage will be updated automatically by the useEffect above
+    }
+  };
+
+  // This function is to be used in the button that adds allergens
+  const handleAddAsAllergen = () => {
+    addAllergen(ingredientInput);
+    setIngredientInput(''); // Clear the input after adding to allergens
+  };
+
+  const handleRemoveAllergen = index => {
+    const newAllergens = [...allergensArray];
+    newAllergens.splice(index, 1);
+    setAllergensArray(newAllergens);
+  };
+
+  const toggleAllergensDropdown = () => {
+    // This function should toggle the visibility of the allergens dropdown
+    setShowAllergensDropdown(!showAllergensDropdown);
   };
 
   const handleRemoveRecipe = recipeId => {
@@ -165,11 +219,12 @@ const RecipeFinder = () => {
           type="text"
           id="text-input"
           placeholder="Enter Ingredients"
-          value={ingredientInput} // Changed to use ingredientInput
+          value={ingredientInput}
           onChange={handleIngredientChange}
         />
         <button onClick={addIngredient}>Add</button>{' '}
         <button onClick={clearIngredients}>Clear</button>
+        <button onClick={handleAddAsAllergen}>Add as Allergen</button>
       </div>
       {/* Display added ingredients */}
       <div className="subheading-text">Added Ingredients</div>
@@ -179,6 +234,24 @@ const RecipeFinder = () => {
             {ingredient}
           </div>
         ))}
+        {/* Allergens dropdown and button */}
+        <div className="allergens-section">
+          <button onClick={toggleAllergensDropdown}>
+            {showAllergensDropdown ? 'Hide Allergens' : 'Show Allergens'}
+          </button>
+          {showAllergensDropdown && (
+            <div className="allergens-dropdown-content">
+              {allergensArray.map((allergen, index) => (
+                <div key={index} className="allergen-item">
+                  {allergen}
+                  <button onClick={() => handleRemoveAllergen(index)}>
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       <div className="subheading-text">Dietary Restrictions</div>
       <div className="dietary-restrictions">

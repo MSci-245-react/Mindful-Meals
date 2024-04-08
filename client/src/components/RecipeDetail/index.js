@@ -14,6 +14,7 @@ const RecipeDetail = ({firebase}) => {
   const [rating, setRating] = useState('');
   const [userId, setUserId] = useState('');
   const [userName, setUserName] = useState('');
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -29,10 +30,10 @@ const RecipeDetail = ({firebase}) => {
           });
 
           if (response.ok) {
-            const userData = await response.json(); // Parse the JSON response
-            setUserId(userData.id); // Update the userId state
-            setUserName(userData.userName); // Update the userName state, ensure these property names match your DB columns
-            console.log('User Data:', userData); // Log the received user data
+            const userData = await response.json();
+            setUserId(userData.id);
+            setUserName(userData.userName);
+            console.log('User Data:', userData);
           } else {
             console.error('Failed to fetch user profile:', response.statusText);
           }
@@ -72,6 +73,12 @@ const RecipeDetail = ({firebase}) => {
     callApiGetRecipes();
   }, [RecipeId]);
 
+  const findRecipe = (recipes, recipeId) => {
+    const id = Number(recipeId);
+    const foundRecipe = recipes.find(recipe => recipe.RecipeId === id);
+    setCurrentRecipe(foundRecipe);
+  };
+
   const sendReview = () => {
     callApiAddReview().then(res => {
       console.log('sending review');
@@ -102,11 +109,36 @@ const RecipeDetail = ({firebase}) => {
     return body;
   };
 
-  const findRecipe = (recipes, recipeId) => {
-    const id = Number(recipeId);
-    const foundRecipe = recipes.find(recipe => recipe.RecipeId === id);
-    setCurrentRecipe(foundRecipe);
-  };
+  useEffect(() => {
+    const callApiGetReviews = async () => {
+      const url = `${serverURL}/api/getReviews`;
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const body = await response.json();
+        console.log('Fetched recipes:', body);
+        const parsed = JSON.parse(body.express);
+        findReview(parsed, RecipeId);
+      } catch (error) {
+        console.error('Fetching error:', error);
+      }
+    };
+
+    const findReview = (reviews, recipeId) => {
+      const id = Number(recipeId);
+      const foundReviews = reviews.filter(review => review.recipeId === id);
+      setReviews(foundReviews);
+    };
+
+    callApiGetReviews();
+  }, [RecipeId]);
 
   const parseString = inputString => {
     return inputString
@@ -194,6 +226,21 @@ const RecipeDetail = ({firebase}) => {
               <button className="submit-button" onClick={handleSubmit}>
                 Submit Review
               </button>{' '}
+            </div>
+            <div>
+              <h3 className="headings">Reviews</h3>
+              {reviews.map((review, index) => (
+                <article key={index} className="review-box">
+                  <h4>{review.reviewTitle}</h4>
+                  <p>{review.reviewBody}</p>
+                  <p>
+                    Rating: <span>{review.rating}/5</span>
+                  </p>
+                  <p>
+                    Author: <span>{review.userName}</span>
+                  </p>
+                </article>
+              ))}
             </div>
           </div>
         </>

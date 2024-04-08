@@ -22,7 +22,7 @@ app.post('/api/SignUp', (req, res) => {
   const {firstName, lastName, userName, email, password} = req.body;
   let connection = mysql.createConnection(config);
   const sql = `INSERT INTO users (firstName, lastName, userName, email, password)
-        VALUES (?, ?, ?, ?, ?)`;
+       VALUES (?, ?, ?, ?, ?)`;
 
   const data = [firstName, lastName, userName, email, password];
 
@@ -56,11 +56,11 @@ app.post('/api/signIn', (req, res) => {
   connection.end();
 });
 
-app.post('/api/profilePage', (req, res) => {
-  const {userName, password} = req.body;
+app.get('/api/profilePage', (req, res) => {
+  const {email} = req.query;
   let connection = mysql.createConnection(config);
-  const sql = `SELECT * FROM users WHERE userName = ? AND password = ?`;
-  const data = [userName, password];
+  const sql = `SELECT * FROM users WHERE email = ?`;
+  const data = [email];
 
   connection.query(sql, data, (err, results) => {
     connection.end();
@@ -79,10 +79,29 @@ app.post('/api/profilePage', (req, res) => {
       firstName: userData.firstName,
       lastName: userData.lastName,
       email: userData.email,
-      password: userData.password,
+      userName: userData.userName,
       bio: userData.bio || '',
-      dietaryRestrictions: userData.dietaryRestrictions || {},
+      allergies: userData.allergies || '',
     });
+  });
+});
+
+// API to read recipes from the database
+
+app.get('/api/getRecipes', (req, res) => {
+  let connection = mysql.createConnection(config);
+  const sql = 'SELECT * FROM nutrition';
+
+  connection.query(sql, (error, results, fields) => {
+    connection.end();
+    if (error) {
+      console.error('Error querying the database:', error);
+      res
+        .status(500)
+        .send('Error retrieving nutritional information from the database');
+    } else {
+      res.json(results);
+    }
   });
 });
 
@@ -144,6 +163,21 @@ app.post('/api/getUserData', (req, res) => {
   connection.end();
 });
 
+app.post('/api/getReviews', (req, res) => {
+  let connection = mysql.createConnection(config);
+
+  const sql = `SELECT * FROM review`;
+
+  connection.query(sql, (error, results, fields) => {
+    if (error) {
+      return console.error(error.message);
+    }
+    let string = JSON.stringify(results);
+    res.send({express: string});
+  });
+  connection.end();
+});
+
 app.post('/api/getNutritionalInfo', (req, res) => {
   let connection = mysql.createConnection(config);
 
@@ -158,6 +192,8 @@ app.post('/api/getNutritionalInfo', (req, res) => {
   });
   connection.end();
 });
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
 
 app.post('/api/saveProfileChanges', (req, res) => {
   const {userName, password, bio, dietaryRestrictions} = req.body;
@@ -203,4 +239,68 @@ app.post('/api/deleteAccount', (req, res) => {
   });
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.post('/api/updateBio', (req, res) => {
+  const {email, bio} = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = 'UPDATE users SET bio = ? WHERE email = ?';
+  const data = [bio, email];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({error: 'User not found'});
+    }
+
+    return res.json({message: 'Bio updated successfully'});
+  });
+});
+
+app.post('/api/updateDietaryRestrictions', (req, res) => {
+  const {email, dietaryRestrictions} = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = 'UPDATE users SET dietaryRestrictions = ? WHERE email = ?';
+  const data = [dietaryRestrictions, email];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({error: 'User not found'});
+    }
+
+    return res.json({message: 'Dietary restrictions updated successfully'});
+  });
+});
+
+app.post('/api/updateAllergies', (req, res) => {
+  const {email, allergies} = req.body;
+  let connection = mysql.createConnection(config);
+  const sql = 'UPDATE users SET allergies = ? WHERE email = ?';
+  const data = [allergies, email];
+
+  connection.query(sql, data, (err, results) => {
+    connection.end();
+
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({error: 'User not found'});
+    }
+
+    return res.json({message: 'Allergies updated successfully'});
+  });
+});
