@@ -30,5 +30,8 @@
     "concurrently": "^8.0.1",
     "cypress": "^13.6.4",
     "prettier": "^3.2.5"
+  },
+  "jest": {
+    "setupFiles": ["./jest.setup.js"]
   }
 }
