@@ -20,7 +20,6 @@ const PrivateRoute = ({ authenticated }) => {
         <Route path="/" element={<HomePage authenticated={authenticated} />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/SignIn" element={<SignIn />} />
-        <Route path="/Profilepage" element={<Profilepage />} />
         <Route path="/SignOut" element={<SignOut />} />
         <Route path="/NutritionalInformation"
           element={<NutritionalInformation />}
