@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {withFirebase} from '../Firebase';
+import React, { useState, useEffect } from 'react';
+import { withFirebase } from '../Firebase';
 import './Profilepage.css';
-import defaultProfilePic from './profile-pic.jpg';
+import defaultProfilePic from './profile-pic.png';
 
-const ProfilePage = ({firebase}) => {
+const ProfilePage = ({ firebase }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingBio, setEditingBio] = useState(false);
@@ -11,6 +11,10 @@ const ProfilePage = ({firebase}) => {
   const [selectedRestrictions, setSelectedRestrictions] = useState([]);
   const [selectedAllergies, setSelectedAllergies] = useState([]);
   const [successMessage, setSuccessMessage] = useState('');
+  const [userId, setUserId] = useState('');
+  const [userName, setUserName] = useState('');
+  const [savedRecipes, setSavedRecipes] = useState([]);
+  const [loadingRecipes, setLoadingRecipes] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -25,8 +29,8 @@ const ProfilePage = ({firebase}) => {
             setSelectedRestrictions(
               profileData.dietaryRestrictions
                 ? profileData.dietaryRestrictions
-                    .split(',')
-                    .map(str => str.trim())
+                  .split(',')
+                  .map(str => str.trim())
                 : [],
             );
             setSelectedAllergies(
@@ -49,6 +53,38 @@ const ProfilePage = ({firebase}) => {
 
     fetchUserProfile();
   }, [firebase.auth.currentUser]);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const user = firebase.auth.currentUser;
+        if (user) {
+          const response = await fetch(`/api/getUserData`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: user.email }),
+          });
+
+          if (response.ok) {
+            const userData = await response.json();
+            setUserId(userData.id);
+            setUserName(userData.userName);
+            console.log('User Data:', userData);
+          } else {
+            console.error('Failed to fetch user profile:', response.statusText);
+          }
+        } else {
+          console.error('No user signed in.');
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleBioEdit = () => {
     setEditingBio(true);
@@ -172,12 +208,36 @@ const ProfilePage = ({firebase}) => {
     return <div>No user profile found</div>;
   }
 
+  const fetchSavedRecipes = async () => {
+    try {
+      setLoadingRecipes(true);
+      const response = await fetch('/api/getSavedRecipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSavedRecipes(data);
+        console.log(data);
+      } else {
+        console.error('Failed to fetch saved recipes:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching saved recipes:', error.message);
+    } finally {
+      setLoadingRecipes(false);
+    }
+  };
+
   return (
     <div className="profile-container">
       <h1>
         Welcome to Mindful Meals, {userProfile.firstName} {userProfile.lastName}
       </h1>
-
       <div className="profile-section">
         <img
           src={defaultProfilePic}
@@ -185,11 +245,31 @@ const ProfilePage = ({firebase}) => {
           style={{
             position: 'absolute',
             top: '210px',
-            right: '400px',
+            right: '250px',
             width: '300px',
             height: '300px',
           }}
         />
+      </div>
+      <div className="profile-section">
+        <button className="show-saved-button" onClick={fetchSavedRecipes}>Show Saved Recipes</button>
+      </div>
+      <div style={{
+        position: 'absolute',
+        top: '610px',
+        right: '200px',
+        width: '300px',
+        height: '300px',
+      }} >
+        {loadingRecipes ? <div>Loading saved recipes...</div> : (
+          <>
+            <ul>
+              {savedRecipes.map((recipe, index) => (
+                <li key={index}>{recipe.recipeName}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
 
       <div className="profile-section">
@@ -234,8 +314,7 @@ const ProfilePage = ({firebase}) => {
           </button>
           <button
             className={
-              selectedRestrictions.includes('vegetarian') ? 'selected' : ''
-            }
+              selectedRestrictions.includes('vegetarian') ? 'selected' : ''}
             onClick={() => toggleSelectedRestriction('vegetarian')}
           >
             Vegetarian
@@ -287,15 +366,12 @@ const ProfilePage = ({firebase}) => {
         <button onClick={handleAllergySave}>Save Allergies</button>
       </div>
 
-      <div className="profile-section">
-        <h2>Saved Recipes</h2>
-        <div></div>
-      </div>
-
-      {successMessage && (
-        <div className="success-message">{successMessage}</div>
-      )}
-    </div>
+      {
+        successMessage && (
+          <div className="success-message">{successMessage}</div>
+        )
+      }
+    </div >
   );
 };
 
