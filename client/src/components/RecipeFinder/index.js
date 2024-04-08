@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import './recipeFinder.css';
 
 const serverURL = '';
@@ -16,7 +16,6 @@ const RecipeFinder = () => {
   const [dietaryRestrictionsArray, setDietaryRestrictionsArray] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
-
 
   // Save savedRecipes to localStorage whenever it changes
   useEffect(() => {
@@ -102,9 +101,10 @@ const RecipeFinder = () => {
     });
   };
 
-
-  const handleSaveRecipe = (recipe) => {
-    const isAlreadySaved = savedRecipes.some(savedRecipe => savedRecipe.RecipeId === recipe.RecipeId);
+  const handleSaveRecipe = recipe => {
+    const isAlreadySaved = savedRecipes.some(
+      savedRecipe => savedRecipe.RecipeId === recipe.RecipeId,
+    );
     if (!isAlreadySaved) {
       const newSavedRecipes = [...savedRecipes, recipe];
       setSavedRecipes(newSavedRecipes);
@@ -113,8 +113,10 @@ const RecipeFinder = () => {
     }
   };
 
-  const handleRemoveRecipe = (recipeId) => {
-    const updatedSavedRecipes = savedRecipes.filter(recipe => recipe.RecipeId !== recipeId);
+  const handleRemoveRecipe = recipeId => {
+    const updatedSavedRecipes = savedRecipes.filter(
+      recipe => recipe.RecipeId !== recipeId,
+    );
     setSavedRecipes(updatedSavedRecipes);
     localStorage.setItem('savedRecipes', JSON.stringify(updatedSavedRecipes));
   };
@@ -123,7 +125,7 @@ const RecipeFinder = () => {
     setShowSavedRecipes(!showSavedRecipes);
   };
 
-  const handleIngredientChange = (e) => {
+  const handleIngredientChange = e => {
     setIngredientInput(e.target.value);
   };
 
@@ -146,7 +148,6 @@ const RecipeFinder = () => {
   const clearSearch = () => {
     setRecipes([]);
   };
-
 
   const goToNextPage = () => {
     setCurrentPage(current => Math.min(current + 1, totalPages));
@@ -209,7 +210,9 @@ const RecipeFinder = () => {
       <div className="recipe-buttons">
         <button onClick={getRecipes}>Search Recipes</button>
         <button onClick={clearSearch}>Clear Recipes</button>
-        <button onClick={handleToggleSavedRecipes}>{showSavedRecipes ? 'Hide Saved' : 'Show Saved'} Recipes</button>
+        <button onClick={handleToggleSavedRecipes}>
+          {showSavedRecipes ? 'Hide Saved' : 'Show Saved'} Recipes
+        </button>
       </div>
 
       {showSavedRecipes && (
@@ -219,7 +222,9 @@ const RecipeFinder = () => {
             <div key={index}>
               {recipe.Name}
               <Link to={`/recipe/${recipe.RecipeId}`}>View</Link>
-              <button onClick={() => handleRemoveRecipe(recipe.RecipeId)}>Remove</button>
+              <button onClick={() => handleRemoveRecipe(recipe.RecipeId)}>
+                Remove
+              </button>
             </div>
           ))}
         </div>
@@ -267,6 +272,5 @@ const RecipeFinder = () => {
       )}
     </div>
   );
-
-}
+};
 export default RecipeFinder;
