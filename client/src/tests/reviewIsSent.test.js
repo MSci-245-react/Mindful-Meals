@@ -4,6 +4,10 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import RecipeDetail from '../components/RecipeDetail/index.js';
 
+jest.mock('../components/Firebase', () => ({
+  withFirebase: Component => props => <Component {...props} firebase={{ auth: { currentUser: { email: 'test@test.ca' } } }} />
+}));
+
 describe('RecipeDetail Component', () => {
   beforeEach(() => {
     global.fetch = jest.fn(() =>
