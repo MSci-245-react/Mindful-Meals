@@ -41,7 +41,7 @@ const RecipeFinder = ({firebase}) => {
         ingredientsArray,
         dietaryRestrictionsArray,
         userAllergiesArray,
-        allergensArray
+        allergensArray,
       );
       setRecipes(filtered);
     });
@@ -50,7 +50,6 @@ const RecipeFinder = ({firebase}) => {
   useEffect(() => {
     localStorage.setItem('allergens', JSON.stringify(allergensArray));
   }, [allergensArray]);
- 
 
   useEffect(() => {
     try {
@@ -109,14 +108,25 @@ const RecipeFinder = ({firebase}) => {
         );
 
       // Check for allergies
+      const allergyFilter =
+        !Array.isArray(userAllergiesArray) ||
+        userAllergiesArray.length === 0 ||
+        !userAllergiesArray.some(allergen =>
+          recipeIngredientsLower.includes(allergen.toLowerCase()),
+        );
 
+      // Filter out ingredients you don't want
       const allergensMatch = !allergensArray.some(allergen =>
         recipeIngredientsLower.includes(allergen.toLowerCase()),
       );
-        
 
       // Return true if all conditions pass
-      return ingredientsMatch && dietaryRestrictionsMatch && allergensMatch;
+      return (
+        ingredientsMatch &&
+        dietaryRestrictionsMatch &&
+        allergyFilter &&
+        allergensMatch
+      );
     });
   };
 
@@ -205,17 +215,17 @@ const RecipeFinder = ({firebase}) => {
       setUserAllergiesArray([]);
       return;
     }
-  
+
     const resultArray = userAllergiesString.split(',');
     const trimmedArray = resultArray.map(element => element.trim());
     setUserAllergiesArray(trimmedArray);
   };
-  
+
   useEffect(() => {
     allergyStringToArray(userAllergiesString);
   }, [userAllergiesString]);
 
-  const addAllergen = (allergen) => {
+  const addAllergen = allergen => {
     if (allergen.trim() && !allergensArray.includes(allergen)) {
       const newAllergens = [...allergensArray, allergen];
       setAllergensArray(newAllergens);
@@ -234,7 +244,7 @@ const RecipeFinder = ({firebase}) => {
     setShowAllergensDropdown(!showAllergensDropdown);
   };
 
-  const handleRemoveAllergen = (index) => {
+  const handleRemoveAllergen = index => {
     const newAllergens = [...allergensArray];
     newAllergens.splice(index, 1);
     setAllergensArray(newAllergens);
@@ -292,23 +302,25 @@ const RecipeFinder = ({firebase}) => {
           </div>
         ))}
         {/* Allergens dropdown and button */}
-<div className="allergens-section">
-        <button onClick={toggleAllergensDropdown}>
-          {showAllergensDropdown ? 'Ingredients to not add' : 'Ingredients to not add'}
-        </button>
-        {showAllergensDropdown && (
-          <div className="allergens-dropdown-content">
-            {allergensArray.map((allergen, index) => (
-              <div key={index} className="allergen-item">
-                {allergen}
-                <button onClick={() => handleRemoveAllergen(index)}>
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        <div className="allergens-section">
+          <button onClick={toggleAllergensDropdown}>
+            {showAllergensDropdown
+              ? 'Ingredients to not add'
+              : 'Ingredients to not add'}
+          </button>
+          {showAllergensDropdown && (
+            <div className="allergens-dropdown-content">
+              {allergensArray.map((allergen, index) => (
+                <div key={index} className="allergen-item">
+                  {allergen}
+                  <button onClick={() => handleRemoveAllergen(index)}>
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       <div className="subheading-text">Dietary Restrictions</div>
       <div className="dietary-restrictions">
